@@ -1,0 +1,57 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.308-encryption
+  name: ephi-encryption-at-rest
+  title: All ePHI data stores have encryption-at-rest enabled
+  framework: hipaa
+  category: Administrative Safeguards
+  severity: critical
+  tags:
+    - hipaa
+    - encryption
+    - ephi
+  owners:
+    - team: platform
+
+spec:
+  description: |
+    HIPAA Security Rule §164.308(a)(4)(ii)(B) (Information Access Management
+    implementation specifications) combined with §164.312(a)(2)(iv)
+    (Encryption and Decryption) requires that ePHI at rest be encrypted.
+    Concord verifies S3 buckets, RDS instances, and EBS volumes tagged
+    ephi=true have encryption-at-rest enabled with KMS.
+
+  rationale: |
+    Encryption-at-rest is the single most-cited HIPAA technical safeguard
+    during OCR audits. Unencrypted ePHI is the trigger for breach
+    notification under the Breach Notification Rule.
+
+  evidence:
+    - id: aws_encryption
+      source: aws
+      type: storage_encryption
+      fixture: ../tests/fixtures/encryption-pass.json
+      params:
+        region: ${env.AWS_REGION}
+
+  policy:
+    engine: rego
+    package: concord.hipaa.encryption
+    file: ../policies/encryption.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164.308-encryption.md
+    auto_fix: false
+    estimated_effort: 1d
+
+  mappings:
+    hipaa:
+      - "164.308(a)(4)(ii)(B)"
+      - "164.312(a)(2)(iv)"
+    soc2:
+      - "C1.1"
+
+  status: stable
+  blocking: true

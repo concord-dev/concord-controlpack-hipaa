@@ -1,0 +1,18 @@
+apiVersion: concord.dev/v1
+kind: ControlPack
+metadata:
+  id: hipaa
+  name: hipaa
+  version: v0.1.0
+  framework_label: HIPAA Security Rule
+  attribution:
+    sources:
+      - prowler
+      - steampipe-powerpipe
+      - aws-audit-manager
+spec:
+  controls:
+    - HIPAA-164.308-encryption
+  evidence_sources:
+    - source: aws
+      version: ">=v0.1.0,<v1.0.0"

@@ -1,0 +1,11 @@
+{
+  "aws_encryption": {
+    "fetched_at": "2026-01-15T10:00:00Z",
+    "buckets": [
+      {"name": "phi-records", "tags": {"ephi": "true"},
+       "encryption": {"configured": false}}
+    ],
+    "rds_instances": [],
+    "ebs_volumes": []
+  }
+}
