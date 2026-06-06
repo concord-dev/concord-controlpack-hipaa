@@ -1,0 +1,24 @@
+{
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "buckets": [
+    {
+      "name": "phi-records",
+      "tags": {
+        "ephi": "true"
+      },
+      "policy": {
+        "Statement": [
+          {
+            "Sid": "AllowSomething",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": "arn:aws:iam::123456789012:role/app"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::phi-records/*"
+          }
+        ]
+      }
+    }
+  ]
+}

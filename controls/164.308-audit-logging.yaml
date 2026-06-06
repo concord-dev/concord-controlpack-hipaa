@@ -1,0 +1,67 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.308-audit-logging
+  name: information-system-activity-review
+  title: CloudTrail is multi-region, log-file-validated, and recording management + data events
+  framework: hipaa
+  category: Administrative Safeguards
+  severity: critical
+  tags:
+    - hipaa
+    - audit
+    - logging
+  owners:
+    - team: security
+
+spec:
+  description: |
+    HIPAA Security Rule §164.308(a)(1)(ii)(D) (Information System
+    Activity Review) requires regular review of records of information
+    system activity such as audit logs, access reports, and security
+    incident tracking reports. Concord verifies that AWS CloudTrail
+    covers every region of the account, validates log integrity,
+    and records both management and data-plane events.
+
+  rationale: |
+    OCR's HIPAA enforcement consistently cites missing or partial
+    CloudTrail coverage as a §164.308 finding. Without log-file
+    validation, log integrity cannot be defended in a breach
+    investigation; without data events, S3-object-level ePHI access
+    is invisible.
+
+  evidence:
+    - id: cloudtrail
+      source: aws
+      type: cloudtrail_trails
+      fixture: ../tests/fixtures/audit-logging-pass.json
+      params:
+        region: ${env.AWS_REGION}
+
+  policy:
+    engine: rego
+    package: concord.hipaa.audit_logging
+    file: ../policies/audit_logging.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164.308-audit-logging.md
+    auto_fix: false
+    estimated_effort: 2h
+
+  mappings:
+    hipaa:
+      - "164.308(a)(1)(ii)(D)"
+    soc2:
+      - "CC4.1"
+      - "CC7.2"
+    nist_800_53:
+      - "AU-2"
+      - "AU-12"
+    iso27001:
+      - "A.8.15"
+    pci_dss:
+      - "10.2"
+
+  status: stable
+  blocking: true

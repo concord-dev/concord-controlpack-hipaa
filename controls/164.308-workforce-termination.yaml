@@ -1,0 +1,64 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.308-workforce-termination
+  name: termination-procedures
+  title: Terminated workforce members have no active identity-provider access
+  framework: hipaa
+  category: Administrative Safeguards
+  severity: critical
+  tags:
+    - hipaa
+    - identity
+    - offboarding
+  owners:
+    - team: it-security
+
+spec:
+  description: |
+    HIPAA Security Rule §164.308(a)(3)(ii)(C) (Termination Procedures)
+    requires that access to ePHI be terminated when a workforce member's
+    employment ends. Concord queries the identity provider for every
+    user marked SUSPENDED, DEPROVISIONED, or DELETED in the last 30
+    days, and verifies the user has no active session, no active
+    application assignments, and no admin role memberships.
+
+  rationale: |
+    Lingering identity-provider access for terminated employees is
+    one of the most common HIPAA-breach root causes. The 24-hour
+    window between termination and last-access-revocation is the
+    operational floor most OCR audits enforce.
+
+  evidence:
+    - id: okta_terminations
+      source: okta
+      type: terminated_users
+      fixture: ../tests/fixtures/workforce-termination-pass.json
+      params:
+        lookback_days: 30
+        org_url: ${env.OKTA_ORG_URL}
+
+  policy:
+    engine: rego
+    package: concord.hipaa.workforce_termination
+    file: ../policies/workforce_termination.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164.308-workforce-termination.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  mappings:
+    hipaa:
+      - "164.308(a)(3)(ii)(C)"
+    soc2:
+      - "CC6.3"
+    nist_800_53:
+      - "PS-4"
+      - "AC-2(3)"
+    iso27001:
+      - "A.6.5"
+
+  status: stable
+  blocking: true

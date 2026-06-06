@@ -1,0 +1,29 @@
+{
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "rds_instances": [
+    {
+      "identifier": "phi-postgres",
+      "tags": {
+        "ephi": "true"
+      },
+      "backup_retention_period": 7
+    }
+  ],
+  "dynamodb_tables": [
+    {
+      "name": "phi-events",
+      "tags": {
+        "ephi": "true"
+      },
+      "point_in_time_recovery_enabled": false
+    }
+  ],
+  "backup_vaults": [
+    {
+      "name": "phi-vault",
+      "holds_ephi": true,
+      "locked": false,
+      "kms_encrypted": false
+    }
+  ]
+}

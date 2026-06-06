@@ -3,16 +3,32 @@ kind: ControlPack
 metadata:
   id: hipaa
   name: hipaa
-  version: v0.1.0
+  version: v0.2.0
   framework_label: HIPAA Security Rule
   attribution:
     sources:
       - prowler
       - steampipe-powerpipe
       - aws-audit-manager
+      - cis-aws
 spec:
   controls:
     - HIPAA-164.308-encryption
+    - HIPAA-164.308-audit-logging
+    - HIPAA-164.308-malware-protection
+    - HIPAA-164.308-password-policy
+    - HIPAA-164.308-data-backup
+    - HIPAA-164.308-workforce-termination
+    - HIPAA-164.308-risk-management
+    - HIPAA-164.310-device-disposal
+    - HIPAA-164.312-unique-user-id
+    - HIPAA-164.312-audit-controls
+    - HIPAA-164.312-integrity
+    - HIPAA-164.312-transmission-security
   evidence_sources:
     - source: aws
+      version: ">=v0.1.0,<v1.0.0"
+    - source: okta
+      version: ">=v0.1.0,<v1.0.0"
+    - source: github
       version: ">=v0.1.0,<v1.0.0"

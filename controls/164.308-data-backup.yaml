@@ -1,0 +1,62 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.308-data-backup
+  name: data-backup-plan
+  title: ePHI data stores have automated backups with HIPAA-grade retention
+  framework: hipaa
+  category: Administrative Safeguards
+  severity: critical
+  tags:
+    - hipaa
+    - backup
+    - contingency
+  owners:
+    - team: platform
+
+spec:
+  description: |
+    HIPAA Security Rule §164.308(a)(7)(ii)(A) (Data Backup Plan)
+    requires retrievable exact copies of ePHI. Concord verifies that
+    every RDS instance and DynamoDB table tagged ephi=true has
+    automated backups enabled with retention ≥ 35 days, and that
+    AWS Backup vault locking is configured for tamper-resistance.
+
+  rationale: |
+    Ransomware-encrypted backups are the most common cause of HIPAA
+    breach-notification events. AWS Backup with vault locking +
+    point-in-time recovery is the operational floor that OCR auditors
+    accept for ePHI.
+
+  evidence:
+    - id: ephi_backups
+      source: aws
+      type: backup_status
+      fixture: ../tests/fixtures/data-backup-pass.json
+      params:
+        region: ${env.AWS_REGION}
+
+  policy:
+    engine: rego
+    package: concord.hipaa.data_backup
+    file: ../policies/data_backup.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164.308-data-backup.md
+    auto_fix: false
+    estimated_effort: 4h
+
+  mappings:
+    hipaa:
+      - "164.308(a)(7)(ii)(A)"
+    soc2:
+      - "A1.2"
+    nist_800_53:
+      - "CP-9"
+      - "CP-10"
+    iso27001:
+      - "A.8.13"
+
+  status: stable
+  blocking: true

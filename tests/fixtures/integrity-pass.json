@@ -1,0 +1,20 @@
+{
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "buckets": [
+    {
+      "name": "phi-records",
+      "tags": {
+        "ephi": "true"
+      },
+      "versioning": {
+        "enabled": true,
+        "mfa_delete": "Enabled"
+      },
+      "object_lock": {
+        "enabled": true,
+        "mode": "COMPLIANCE",
+        "retention_days": 2557
+      }
+    }
+  ]
+}

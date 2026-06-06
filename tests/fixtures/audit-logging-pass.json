@@ -1,0 +1,27 @@
+{
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "trails": [
+    {
+      "name": "phi-multi-region-trail",
+      "home_region": "us-east-1",
+      "is_multi_region_trail": true,
+      "is_logging": true,
+      "log_file_validation_enabled": true,
+      "kms_key_id": "arn:aws:kms:us-east-1:123456789012:key/cloudtrail-key",
+      "event_selectors": [
+        {
+          "read_write_type": "All",
+          "include_management_events": true,
+          "data_resources": [
+            {
+              "type": "AWS::S3::Object",
+              "values": [
+                "arn:aws:s3:::phi-records/"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

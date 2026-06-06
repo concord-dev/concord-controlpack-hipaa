@@ -1,0 +1,18 @@
+{
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "account_access_keys_present": 0,
+  "root_last_used_days_ago": 365,
+  "shared_credentials": [],
+  "users": [
+    {
+      "username": "alice@acme.health",
+      "is_service_account": false,
+      "has_console_login": true
+    },
+    {
+      "username": "ci-deployer",
+      "is_service_account": true,
+      "has_console_login": false
+    }
+  ]
+}

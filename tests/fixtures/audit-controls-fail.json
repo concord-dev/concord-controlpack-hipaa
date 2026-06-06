@@ -1,0 +1,11 @@
+{
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "log_groups": [
+    {
+      "name": "/aws/phi/api",
+      "holds_ephi": true,
+      "retention_in_days": 30,
+      "kms_key_id": null
+    }
+  ]
+}

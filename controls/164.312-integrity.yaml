@@ -1,0 +1,65 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.312-integrity
+  name: integrity-and-authentication-of-ephi
+  title: ePHI buckets enforce versioning and Object Lock so ePHI cannot be silently altered
+  framework: hipaa
+  category: Technical Safeguards
+  severity: critical
+  tags:
+    - hipaa
+    - integrity
+    - storage
+  owners:
+    - team: platform
+
+spec:
+  description: |
+    HIPAA Security Rule §164.312(c)(1) (Integrity) and §164.312(c)(2)
+    (Mechanism to Authenticate ePHI) require protections to ensure
+    ePHI has not been altered or destroyed in an unauthorised manner.
+    Concord verifies every S3 bucket tagged ephi=true has versioning
+    enabled and Object Lock (or, at minimum, MFA-Delete) configured.
+
+  rationale: |
+    Without versioning + Object Lock, a single compromised credential
+    can silently overwrite an ePHI object and the prior version is
+    unrecoverable. Object Lock in Compliance mode is the strongest
+    integrity guarantee AWS provides — even AWS root cannot delete a
+    locked object before its retention expires.
+
+  evidence:
+    - id: ephi_buckets
+      source: aws
+      type: s3_bucket_integrity
+      fixture: ../tests/fixtures/integrity-pass.json
+      params:
+        region: ${env.AWS_REGION}
+
+  policy:
+    engine: rego
+    package: concord.hipaa.integrity
+    file: ../policies/integrity.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164.312-integrity.md
+    auto_fix: true
+    estimated_effort: 2h
+
+  mappings:
+    hipaa:
+      - "164.312(c)(1)"
+      - "164.312(c)(2)"
+    soc2:
+      - "PI1.1"
+      - "P4.2"
+    nist_800_53:
+      - "SI-7"
+      - "AU-9"
+    iso27001:
+      - "A.8.12"
+
+  status: stable
+  blocking: true

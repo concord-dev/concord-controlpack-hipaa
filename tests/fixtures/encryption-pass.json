@@ -1,17 +1,38 @@
 {
-  "aws_encryption": {
-    "fetched_at": "2026-01-15T10:00:00Z",
-    "buckets": [
-      {"name": "phi-records", "tags": {"ephi": "true"},
-       "encryption": {"configured": true, "type": "aws:kms"}}
-    ],
-    "rds_instances": [
-      {"identifier": "phi-postgres", "tags": {"ephi": "true"},
-       "encryption": {"configured": true, "type": "aws:kms"}}
-    ],
-    "ebs_volumes": [
-      {"volume_id": "vol-phi-abc", "tags": {"ephi": "true"},
-       "encryption": {"configured": true}}
-    ]
-  }
+  "fetched_at": "2026-01-15T10:00:00Z",
+  "buckets": [
+    {
+      "name": "phi-records",
+      "tags": {
+        "ephi": "true"
+      },
+      "encryption": {
+        "configured": true,
+        "type": "aws:kms"
+      }
+    }
+  ],
+  "rds_instances": [
+    {
+      "identifier": "phi-postgres",
+      "tags": {
+        "ephi": "true"
+      },
+      "encryption": {
+        "configured": true,
+        "type": "aws:kms"
+      }
+    }
+  ],
+  "ebs_volumes": [
+    {
+      "volume_id": "vol-phi-abc",
+      "tags": {
+        "ephi": "true"
+      },
+      "encryption": {
+        "configured": true
+      }
+    }
+  ]
 }

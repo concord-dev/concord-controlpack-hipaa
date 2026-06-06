@@ -1,0 +1,68 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.312-unique-user-id
+  name: unique-user-identification
+  title: Every IAM identity touching ePHI is uniquely identifiable, root account is unused
+  framework: hipaa
+  category: Technical Safeguards
+  severity: critical
+  tags:
+    - hipaa
+    - identity
+    - access-control
+  owners:
+    - team: it-security
+
+spec:
+  description: |
+    HIPAA Security Rule §164.312(a)(2)(i) (Unique User Identification)
+    requires assigning a unique name and/or number for identifying
+    and tracking user identity. Concord verifies (a) the AWS root
+    account has no access keys and has not been used recently,
+    (b) no IAM users share a console login or access key, and
+    (c) every IAM access pattern is attributable to a named principal
+    (no service accounts shared across humans).
+
+  rationale: |
+    Shared accounts break the entire HIPAA audit-trail story —
+    if two clinicians share `intake@acme.health`, ePHI access cannot
+    be attributed to a real person. AWS root usage is the single
+    highest-severity HIPAA finding because every action is logged
+    as `root`, which by definition is non-unique.
+
+  evidence:
+    - id: iam_identity
+      source: aws
+      type: iam_account_summary
+      fixture: ../tests/fixtures/unique-user-id-pass.json
+      params:
+        region: ${env.AWS_REGION}
+
+  policy:
+    engine: rego
+    package: concord.hipaa.unique_user_id
+    file: ../policies/unique_user_id.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164.312-unique-user-id.md
+    auto_fix: false
+    estimated_effort: 4h
+
+  mappings:
+    hipaa:
+      - "164.312(a)(2)(i)"
+    soc2:
+      - "CC6.1"
+    nist_800_53:
+      - "IA-2"
+      - "AC-2"
+    iso27001:
+      - "A.5.16"
+    cis_aws:
+      - "1.4"
+      - "1.7"
+
+  status: stable
+  blocking: true

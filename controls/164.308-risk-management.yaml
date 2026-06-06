@@ -1,0 +1,68 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.308-risk-management
+  name: risk-analysis-and-management
+  title: Current risk analysis and risk-management plan are documented and reviewed annually
+  framework: hipaa
+  category: Administrative Safeguards
+  severity: high
+  tags:
+    - hipaa
+    - risk
+    - governance
+  owners:
+    - team: compliance
+
+spec:
+  description: |
+    HIPAA Security Rule §164.308(a)(1)(ii)(A) (Risk Analysis) and
+    §164.308(a)(1)(ii)(B) (Risk Management) require an accurate and
+    thorough assessment of risks to ePHI plus a documented plan to
+    reduce those risks to a reasonable level. Concord reads a signed
+    attestation file (cosign-verified) from the policy repository
+    that records the last-reviewed date, the reviewer, and the
+    risk-treatment plan summary.
+
+  rationale: |
+    HHS guidance is explicit that risk analysis is the foundational
+    HIPAA Security Rule control — every other §164.308 implementation
+    specification flows from it. Auditors expect the document to be
+    current (reviewed within the last 12 months), authored by an
+    accountable owner, and traceable to the risks in Concord's risk
+    register.
+
+  evidence:
+    - id: risk_attestation
+      source: github
+      type: file_glob
+      fixture: ../tests/fixtures/risk-management-pass.json
+      params:
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/risk-analysis.yaml"
+
+  policy:
+    engine: rego
+    package: concord.hipaa.risk_management
+    file: ../policies/risk_management.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164.308-risk-management.md
+    auto_fix: false
+    estimated_effort: 2d
+
+  mappings:
+    hipaa:
+      - "164.308(a)(1)(ii)(A)"
+      - "164.308(a)(1)(ii)(B)"
+    soc2:
+      - "CC3.1"
+    nist_800_53:
+      - "RA-3"
+    iso27001:
+      - "A.5.1"
+      - "A.5.4"
+
+  status: stable
+  blocking: true

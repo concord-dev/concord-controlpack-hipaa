@@ -1,0 +1,69 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.312-transmission-security
+  name: transmission-security
+  title: ePHI buckets enforce TLS on every request via bucket policy
+  framework: hipaa
+  category: Technical Safeguards
+  severity: critical
+  tags:
+    - hipaa
+    - encryption
+    - transmission
+  owners:
+    - team: platform
+
+spec:
+  description: |
+    HIPAA Security Rule §164.312(e)(1) (Transmission Security) and
+    §164.312(e)(2)(ii) (Encryption) require technical measures to
+    guard against unauthorised access to ePHI transmitted over an
+    electronic communications network. Concord verifies every S3
+    bucket tagged ephi=true carries a bucket policy that denies
+    requests where aws:SecureTransport is false.
+
+  rationale: |
+    AWS enables TLS but does not enforce it — a misconfigured client
+    can still PutObject over plaintext HTTP. The bucket-policy Deny
+    is the only enforcement mechanism that survives misconfigured
+    clients. This is one of the most-cited HIPAA findings in OCR's
+    HHS Cloud Computing guidance.
+
+  evidence:
+    - id: ephi_bucket_policies
+      source: aws
+      type: s3_bucket_policy
+      fixture: ../tests/fixtures/transmission-security-pass.json
+      params:
+        region: ${env.AWS_REGION}
+
+  policy:
+    engine: rego
+    package: concord.hipaa.transmission_security
+    file: ../policies/transmission_security.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164.312-transmission-security.md
+    auto_fix: true
+    estimated_effort: 30m
+
+  mappings:
+    hipaa:
+      - "164.312(e)(1)"
+      - "164.312(e)(2)(ii)"
+    soc2:
+      - "CC6.7"
+    nist_800_53:
+      - "SC-8"
+      - "SC-13"
+    iso27001:
+      - "A.8.20"
+      - "A.8.24"
+    pci_dss:
+      - "4.1"
+      - "4.2"
+
+  status: stable
+  blocking: true

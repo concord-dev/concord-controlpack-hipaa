@@ -1,0 +1,67 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.310-device-disposal
+  name: device-and-media-disposal
+  title: Device and media disposal procedure is documented, reviewed, and tied to actual decommissioning events
+  framework: hipaa
+  category: Physical Safeguards
+  severity: high
+  tags:
+    - hipaa
+    - physical
+    - disposal
+  owners:
+    - team: it-operations
+
+spec:
+  description: |
+    HIPAA Security Rule §164.310(d)(2)(i) (Disposal) and (d)(2)(ii)
+    (Media Re-use) require procedures for the disposal of ePHI and
+    for removing ePHI from electronic media before re-use. Concord
+    reads a signed attestation file listing the disposal procedure
+    + the trailing-90-days disposal log so that policy and practice
+    are both verified.
+
+  rationale: |
+    Cloud-only organisations still own physical devices (laptops,
+    on-prem disks, ad-hoc backups). OCR audits routinely catch
+    organisations that have a written disposal policy but no
+    evidence the policy was followed. The attestation pattern lets
+    Concord verify both the policy version and the disposal log
+    in one read.
+
+  evidence:
+    - id: disposal_attestation
+      source: github
+      type: file_glob
+      fixture: ../tests/fixtures/device-disposal-pass.json
+      params:
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/device-disposal.yaml"
+
+  policy:
+    engine: rego
+    package: concord.hipaa.device_disposal
+    file: ../policies/device_disposal.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164.310-device-disposal.md
+    auto_fix: false
+    estimated_effort: 1d
+
+  mappings:
+    hipaa:
+      - "164.310(d)(2)(i)"
+      - "164.310(d)(2)(ii)"
+    soc2:
+      - "P4.2"
+    nist_800_53:
+      - "MP-6"
+    iso27001:
+      - "A.7.10"
+      - "A.7.14"
+
+  status: stable
+  blocking: true

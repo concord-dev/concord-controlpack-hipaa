@@ -1,0 +1,30 @@
+{
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "buckets": [
+    {
+      "name": "phi-records",
+      "tags": {
+        "ephi": "true"
+      },
+      "policy": {
+        "Statement": [
+          {
+            "Sid": "DenyInsecureTransport",
+            "Effect": "Deny",
+            "Principal": "*",
+            "Action": "s3:*",
+            "Resource": [
+              "arn:aws:s3:::phi-records",
+              "arn:aws:s3:::phi-records/*"
+            ],
+            "Condition": {
+              "Bool": {
+                "aws:SecureTransport": "false"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "log_groups": [
+    {
+      "name": "/aws/phi/api",
+      "holds_ephi": true,
+      "retention_in_days": 2557,
+      "kms_key_id": "arn:aws:kms:us-east-1:123456789012:key/logs-key"
+    },
+    {
+      "name": "/aws/lambda/non-phi",
+      "holds_ephi": false,
+      "retention_in_days": 365,
+      "kms_key_id": null
+    }
+  ]
+}

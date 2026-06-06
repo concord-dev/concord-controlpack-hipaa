@@ -1,0 +1,13 @@
+{
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "trails": [
+    {
+      "name": "us-east-1-only",
+      "home_region": "us-east-1",
+      "is_multi_region_trail": false,
+      "is_logging": true,
+      "log_file_validation_enabled": false,
+      "event_selectors": []
+    }
+  ]
+}
