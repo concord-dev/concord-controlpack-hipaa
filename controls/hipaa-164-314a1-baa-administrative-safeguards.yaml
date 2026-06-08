@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.314a1-baa-administrative-safeguards
+  name: hipaa-164-314a1-baa-administrative-safeguards
+  title: BAA administrative safeguard clauses cover required topics
+  framework: hipaa
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.314a1-baa-administrative-safeguards enforces.
+
+  evidence:
+    - id: hipaa_164_314a1_baa_administrative_safeguards
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/hipaa-164-314a1-baa-administrative-safeguards-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_314a1_baa_administrative_safeguards
+    file: ../policies/hipaa-164-314a1-baa-administrative-safeguards.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-314a1-baa-administrative-safeguards.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

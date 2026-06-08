@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.312e2ii-encryption-in-transit
+  name: hipaa-164-312e2ii-encryption-in-transit
+  title: TLS 1.2+ is enforced on every ePHI transmission endpoint
+  framework: hipaa
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.312e2ii-encryption-in-transit enforces.
+
+  evidence:
+    - id: hipaa_164_312e2ii_encryption_in_transit
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/hipaa-164-312e2ii-encryption-in-transit-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_312e2ii_encryption_in_transit
+    file: ../policies/hipaa-164-312e2ii-encryption-in-transit.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-312e2ii-encryption-in-transit.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.312a2ii-emergency-access-procedure
+  name: hipaa-164-312a2ii-emergency-access-procedure
+  title: Break-glass IAM procedure exists and is auditable
+  framework: hipaa
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.312a2ii-emergency-access-procedure enforces.
+
+  evidence:
+    - id: hipaa_164_312a2ii_emergency_access_procedure
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/hipaa-164-312a2ii-emergency-access-procedure-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_312a2ii_emergency_access_procedure
+    file: ../policies/hipaa-164-312a2ii-emergency-access-procedure.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-312a2ii-emergency-access-procedure.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

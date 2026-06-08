@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.308a4iiA-isolating-clearinghouse
+  name: hipaa-164-308a4iia-isolating-clearinghouse
+  title: Healthcare clearinghouse functions are isolated from larger org
+  framework: hipaa
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.308a4iiA-isolating-clearinghouse enforces.
+
+  evidence:
+    - id: hipaa_164_308a4iia_isolating_clearinghouse
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/hipaa-164-308a4iia-isolating-clearinghouse-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_308a4iia_isolating_clearinghouse
+    file: ../policies/hipaa-164-308a4iia-isolating-clearinghouse.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-308a4iia-isolating-clearinghouse.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

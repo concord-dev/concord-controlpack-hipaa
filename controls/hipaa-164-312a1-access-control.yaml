@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.312a1-access-control
+  name: hipaa-164-312a1-access-control
+  title: IAM least-privilege is enforced for accounts that access ePHI
+  framework: hipaa
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.312a1-access-control enforces.
+
+  evidence:
+    - id: hipaa_164_312a1_access_control
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/hipaa-164-312a1-access-control-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_312a1_access_control
+    file: ../policies/hipaa-164-312a1-access-control.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-312a1-access-control.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

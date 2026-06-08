@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.310c-workstation-security
+  name: hipaa-164-310c-workstation-security
+  title: Workstations accessing ePHI have endpoint encryption and MDM controls
+  framework: hipaa
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.310c-workstation-security enforces.
+
+  evidence:
+    - id: hipaa_164_310c_workstation_security
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/hipaa-164-310c-workstation-security-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_310c_workstation_security
+    file: ../policies/hipaa-164-310c-workstation-security.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-310c-workstation-security.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.308a1ii-risk-analysis
+  name: hipaa-164-308a1ii-risk-analysis
+  title: Risk analysis covering ePHI confidentiality / integrity / availability is current
+  framework: hipaa
+  severity: high
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.308a1ii-risk-analysis enforces.
+
+  evidence:
+    - id: hipaa_164_308a1ii_risk_analysis
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/hipaa-164-308a1ii-risk-analysis-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_308a1ii_risk_analysis
+    file: ../policies/hipaa-164-308a1ii-risk-analysis.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-308a1ii-risk-analysis.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.308a5iiA-security-reminders
+  name: hipaa-164-308a5iia-security-reminders
+  title: Periodic security reminders are distributed to the workforce
+  framework: hipaa
+  severity: low
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.308a5iiA-security-reminders enforces.
+
+  evidence:
+    - id: hipaa_164_308a5iia_security_reminders
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/hipaa-164-308a5iia-security-reminders-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_308a5iia_security_reminders
+    file: ../policies/hipaa-164-308a5iia-security-reminders.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-308a5iia-security-reminders.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

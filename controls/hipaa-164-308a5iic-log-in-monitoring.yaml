@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.308a5iiC-log-in-monitoring
+  name: hipaa-164-308a5iic-log-in-monitoring
+  title: Failed login attempts are monitored and alerted across all IAM users
+  framework: hipaa
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.308a5iiC-log-in-monitoring enforces.
+
+  evidence:
+    - id: hipaa_164_308a5iic_log_in_monitoring
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/hipaa-164-308a5iic-log-in-monitoring-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_308a5iic_log_in_monitoring
+    file: ../policies/hipaa-164-308a5iic-log-in-monitoring.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-308a5iic-log-in-monitoring.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

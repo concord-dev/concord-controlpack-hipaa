@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.310a2ii-facility-security-plan
+  name: hipaa-164-310a2ii-facility-security-plan
+  title: Written facility security plan is current and reviewed
+  framework: hipaa
+  severity: low
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.310a2ii-facility-security-plan enforces.
+
+  evidence:
+    - id: hipaa_164_310a2ii_facility_security_plan
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/hipaa-164-310a2ii-facility-security-plan-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_310a2ii_facility_security_plan
+    file: ../policies/hipaa-164-310a2ii-facility-security-plan.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-310a2ii-facility-security-plan.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

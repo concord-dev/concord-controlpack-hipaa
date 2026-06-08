@@ -1,0 +1,8 @@
+{
+  "hipaa_164_308b1_business_associate_contracts": {
+    "fetched_at": "2026-01-01T00:00:00Z",
+    "vendors": [
+      { "name": "Datadog", "tier": "tier_1", "current_cert": false, "cert_type": "" }
+    ]
+  }
+}

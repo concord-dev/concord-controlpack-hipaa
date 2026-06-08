@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.316b1-policies-and-procedures-retention
+  name: hipaa-164-316b1-policies-and-procedures-retention
+  title: HIPAA policies are retained for 6 years per §164.316(b)
+  framework: hipaa
+  severity: low
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.316b1-policies-and-procedures-retention enforces.
+
+  evidence:
+    - id: hipaa_164_316b1_policies_and_procedures_retention
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/hipaa-164-316b1-policies-and-procedures-retention-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_316b1_policies_and_procedures_retention
+    file: ../policies/hipaa-164-316b1-policies-and-procedures-retention.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-316b1-policies-and-procedures-retention.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

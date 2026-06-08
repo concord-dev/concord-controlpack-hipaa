@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.312a2iii-automatic-logoff
+  name: hipaa-164-312a2iii-automatic-logoff
+  title: Automatic session logoff is enforced on systems accessing ePHI
+  framework: hipaa
+  severity: low
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.312a2iii-automatic-logoff enforces.
+
+  evidence:
+    - id: hipaa_164_312a2iii_automatic_logoff
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/hipaa-164-312a2iii-automatic-logoff-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_312a2iii_automatic_logoff
+    file: ../policies/hipaa-164-312a2iii-automatic-logoff.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-312a2iii-automatic-logoff.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

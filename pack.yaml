@@ -3,7 +3,7 @@ kind: ControlPack
 metadata:
   id: hipaa
   name: hipaa
-  version: v0.2.0
+  version: v0.3.0
   framework_label: HIPAA Security Rule
   attribution:
     sources:
@@ -11,6 +11,7 @@ metadata:
       - steampipe-powerpipe
       - aws-audit-manager
       - cis-aws
+      - hhs-ocr-guidance
 spec:
   controls:
     - HIPAA-164.308-encryption
@@ -20,15 +21,43 @@ spec:
     - HIPAA-164.308-data-backup
     - HIPAA-164.308-workforce-termination
     - HIPAA-164.308-risk-management
+    - HIPAA-164.308a1ii-risk-analysis
+    - HIPAA-164.308a2-assigned-security-responsibility
+    - HIPAA-164.308a3iA-authorization-supervision
+    - HIPAA-164.308a3iB-workforce-clearance
+    - HIPAA-164.308a3iiC-termination-procedures
+    - HIPAA-164.308a4iiA-isolating-clearinghouse
+    - HIPAA-164.308a5iiA-security-reminders
+    - HIPAA-164.308a5iiC-log-in-monitoring
+    - HIPAA-164.308a6i-security-incident-procedures
+    - HIPAA-164.308a7i-contingency-plan
+    - HIPAA-164.308a8-evaluation
+    - HIPAA-164.308b1-business-associate-contracts
     - HIPAA-164.310-device-disposal
+    - HIPAA-164.310a1-facility-access-controls
+    - HIPAA-164.310a2i-contingency-operations
+    - HIPAA-164.310a2ii-facility-security-plan
+    - HIPAA-164.310b-workstation-use
+    - HIPAA-164.310c-workstation-security
     - HIPAA-164.312-unique-user-id
     - HIPAA-164.312-audit-controls
     - HIPAA-164.312-integrity
     - HIPAA-164.312-transmission-security
+    - HIPAA-164.312a1-access-control
+    - HIPAA-164.312a2ii-emergency-access-procedure
+    - HIPAA-164.312a2iii-automatic-logoff
+    - HIPAA-164.312d-person-or-entity-authentication
+    - HIPAA-164.312e2ii-encryption-in-transit
+    - HIPAA-164.314a1-baa-administrative-safeguards
+    - HIPAA-164.316b1-policies-and-procedures-retention
   evidence_sources:
     - source: aws
       version: ">=v0.1.0,<v1.0.0"
     - source: okta
       version: ">=v0.1.0,<v1.0.0"
     - source: github
+      version: ">=v0.1.0,<v1.0.0"
+    - source: attestation
+      version: ">=v0.1.0,<v1.0.0"
+    - source: concord
       version: ">=v0.1.0,<v1.0.0"

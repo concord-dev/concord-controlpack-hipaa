@@ -1,0 +1,40 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.310a2i-contingency-operations
+  name: hipaa-164-310a2i-contingency-operations
+  title: Facility access during emergencies is documented and tested
+  framework: hipaa
+  severity: medium
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.310a2i-contingency-operations enforces.
+
+  evidence:
+    - id: hipaa_164_310a2i_contingency_operations
+      source: attestation
+      type: policy_attestation
+      fixture: ../tests/fixtures/hipaa-164-310a2i-contingency-operations-pass.json
+      params:
+              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
+              signers:
+                - dpo@acme.com
+              max_age_days: 365
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_310a2i_contingency_operations
+    file: ../policies/hipaa-164-310a2i-contingency-operations.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-310a2i-contingency-operations.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false

@@ -1,0 +1,38 @@
+apiVersion: concord.dev/v1
+kind: Control
+
+metadata:
+  id: HIPAA-164.312d-person-or-entity-authentication
+  name: hipaa-164-312d-person-or-entity-authentication
+  title: MFA is enforced for every IAM user with console access
+  framework: hipaa
+  severity: critical
+  tags: []
+  owners:
+    - team: concord-dev
+
+spec:
+  description: |
+    TODO: describe what HIPAA-164.312d-person-or-entity-authentication enforces.
+
+  evidence:
+    - id: hipaa_164_312d_person_or_entity_authentication
+      source: aws
+      type: aws_resource_inventory
+      fixture: ../tests/fixtures/hipaa-164-312d-person-or-entity-authentication-pass.json
+      params:
+              service: TODO  # e.g. s3, iam, kms
+              region: us-east-1
+
+  policy:
+    engine: rego
+    package: concord.hipaa.hipaa_164_312d_person_or_entity_authentication
+    file: ../policies/hipaa-164-312d-person-or-entity-authentication.rego
+
+  remediation:
+    runbook: docs/remediation/hipaa-164-312d-person-or-entity-authentication.md
+    auto_fix: false
+    estimated_effort: 30m
+
+  status: draft
+  blocking: false
