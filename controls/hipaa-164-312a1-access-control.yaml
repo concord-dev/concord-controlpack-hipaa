@@ -3,36 +3,68 @@ kind: Control
 
 metadata:
   id: HIPAA-164.312a1-access-control
-  name: hipaa-164-312a1-access-control
+  name: access-control
   title: IAM least-privilege is enforced for accounts that access ePHI
   framework: hipaa
+  category: Technical Safeguards
   severity: critical
-  tags: []
+  tags:
+    - hipaa
+    - iam
+    - least-privilege
+    - access-control
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.312a1-access-control enforces.
+    HIPAA Security Rule §164.312(a)(1) (Access Control) requires technical
+    policies that grant ePHI access only to those persons and software
+    programs that have been granted access rights. Concord reads every IAM
+    identity (user, group, and role) in the ePHI account together with the
+    managed and inline policies attached to it, and fails any identity that
+    is attached to the AWS-managed AdministratorAccess policy or to a policy
+    whose Allow statement grants Action "*" on Resource "*". Such grants are
+    the antithesis of least-privilege and cannot bound access to ePHI.
+
+  rationale: |
+    Broad "*/*" grants are the most common way least-privilege erodes in
+    practice: a role created for one task accumulates AdministratorAccess and
+    then quietly becomes a path to every ePHI store in the account. OCR
+    corrective action plans repeatedly require covered entities to demonstrate
+    role-based, minimum-necessary access under §164.312(a)(1); an
+    unconstrained admin grant is an immediate audit finding. The check fails
+    closed — if evidence is missing the control denies rather than assuming
+    least-privilege holds.
 
   evidence:
-    - id: hipaa_164_312a1_access_control
+    - id: iam_policies
       source: aws
-      type: aws_resource_inventory
+      type: iam_policies
       fixture: ../tests/fixtures/hipaa-164-312a1-access-control-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_312a1_access_control
+    package: concord.hipaa.access_control
     file: ../policies/hipaa-164-312a1-access-control.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-312a1-access-control.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.312(a)(1)"
+    soc2:
+      - "CC6.1"
+      - "CC6.3"
+    nist_800_53:
+      - "AC-6"
+    cis_aws:
+      - "1.16"
+
+  status: stable
+  blocking: true

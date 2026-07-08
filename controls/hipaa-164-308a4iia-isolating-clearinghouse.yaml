@@ -4,37 +4,70 @@ kind: Control
 metadata:
   id: HIPAA-164.308a4iiA-isolating-clearinghouse
   name: hipaa-164-308a4iia-isolating-clearinghouse
-  title: Healthcare clearinghouse functions are isolated from larger org
+  title: Healthcare clearinghouse functions are isolated, or non-applicability is justified
   framework: hipaa
+  category: Administrative Safeguards
   severity: medium
-  tags: []
+  tags:
+    - hipaa
+    - administrative-safeguards
+    - segregation
+    - clearinghouse
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a4iiA-isolating-clearinghouse enforces.
+    HIPAA Security Rule §164.308(a)(4)(ii)(A) (Isolating Health Care
+    Clearinghouse Functions) is an addressable specification: if a health care
+    clearinghouse is part of a larger organization, it must implement policies
+    and procedures that protect the ePHI of the clearinghouse from
+    unauthorized access by the larger organization. This control reads a
+    signed attestation from the policy repository. When clearinghouse
+    functions are performed it confirms the isolation controls are documented;
+    when they are not, it requires an explicit applicability=false declaration
+    with a written justification. Either way the attestation must be current
+    and signed.
+
+  rationale: |
+    Applicability is itself the audit question here: an organization cannot
+    silently skip an addressable specification. If it performs clearinghouse
+    functions, the larger organization must be walled off from that ePHI, and
+    the isolation controls must be named. If it does not, OCR still expects a
+    documented, reasoned determination on file rather than an unstated
+    assumption. This control denies both a claimed-applicable document with no
+    isolation controls and a not-applicable document with no justification, so
+    a blank field can never masquerade as compliance.
 
   evidence:
-    - id: hipaa_164_308a4iia_isolating_clearinghouse
-      source: attestation
-      type: policy_attestation
+    - id: clearinghouse_isolation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a4iia-isolating-clearinghouse-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/clearinghouse-isolation.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a4iia_isolating_clearinghouse
+    package: concord.hipaa.isolating_clearinghouse
     file: ../policies/hipaa-164-308a4iia-isolating-clearinghouse.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a4iia-isolating-clearinghouse.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(4)(ii)(A)"
+    soc2:
+      - "CC6.1"
+    nist_800_53:
+      - "SC-7"
+      - "AC-4"
+    iso27001:
+      - "A.8.22"
+
+  status: stable
+  blocking: true

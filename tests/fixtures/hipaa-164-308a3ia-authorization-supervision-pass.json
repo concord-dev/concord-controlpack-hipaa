@@ -1,11 +1,9 @@
 {
-  "hipaa_164_308a3ia_authorization_supervision": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "authorization_process": "Access to ePHI systems is requested in the ITSM tool, granted on a least-privilege role basis, and approved before provisioning; access is recertified quarterly.",
+  "supervision_process": "Workforce members with ePHI access are assigned a supervising manager who reviews activity reports monthly; contractors are escorted or session-monitored.",
+  "approver_role": "System Owner (with Security Official countersignature for privileged roles)",
+  "last_reviewed_at": "2026-04-20",
+  "review_age_days": 47,
+  "signature_verified": true
 }

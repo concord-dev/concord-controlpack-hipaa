@@ -3,38 +3,67 @@ kind: Control
 
 metadata:
   id: HIPAA-164.310a1-facility-access-controls
-  name: hipaa-164-310a1-facility-access-controls
+  name: facility-access-controls
   title: Facility access controls limit physical access to systems storing ePHI
   framework: hipaa
-  severity: medium
-  tags: []
+  category: Physical Safeguards
+  severity: high
+  tags:
+    - hipaa
+    - physical-safeguards
+    - facility-access
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.310a1-facility-access-controls enforces.
+    HIPAA Security Rule §164.310(a)(1) (Facility Access Controls) requires
+    policies and procedures that limit physical access to the electronic
+    information systems that house ePHI and the facilities in which they are
+    housed, while ensuring properly authorized access is allowed. Data-center
+    badge readers and visitor logs are not reachable as cloud telemetry, so
+    Concord evaluates a signed, version-controlled attestation of the facility
+    access program. The attestation must be current, cosign-verified, and
+    enumerate the access-control measures, the roles authorized for entry, and
+    the visitor-handling policy.
+
+  rationale: |
+    Physical access to servers, backup media, or network closets bypasses
+    every logical safeguard protecting ePHI, and OCR investigations routinely
+    cite uncontrolled facility access as a §164.310(a)(1) failure. Auditors
+    expect a documented program that names the authorized roles, describes the
+    controls that enforce entry restrictions (badge readers, locked cages,
+    escort rules), governs visitors, and is reviewed at least annually by an
+    accountable owner.
 
   evidence:
-    - id: hipaa_164_310a1_facility_access_controls
-      source: attestation
-      type: policy_attestation
+    - id: facility_access_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-310a1-facility-access-controls-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/physical/facility-access-controls.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_310a1_facility_access_controls
+    package: concord.hipaa.facility_access_controls
     file: ../policies/hipaa-164-310a1-facility-access-controls.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-310a1-facility-access-controls.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.310(a)(1)"
+    soc2:
+      - "CC6.4"
+    nist_800_53:
+      - "PE-3"
+    iso27001:
+      - "A.7.2"
+
+  status: stable
+  blocking: true

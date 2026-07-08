@@ -3,36 +3,70 @@ kind: Control
 
 metadata:
   id: HIPAA-164.310c-workstation-security
-  name: hipaa-164-310c-workstation-security
-  title: Workstations accessing ePHI have endpoint encryption and MDM controls
+  name: workstation-security
+  title: Every workstation that can access ePHI is disk-encrypted and MDM-enrolled
   framework: hipaa
-  severity: medium
-  tags: []
+  category: Physical Safeguards
+  severity: high
+  tags:
+    - hipaa
+    - physical-safeguards
+    - workstation
+    - endpoint
+    - mdm
+    - encryption
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.310c-workstation-security enforces.
+    HIPAA Security Rule §164.310(c) (Workstation Security) requires physical
+    safeguards for all workstations that access ePHI so that access is restricted
+    to authorized users. Concord reads the managed-device inventory from the
+    identity/MDM provider and fails any device flagged as accessing ePHI that is
+    not centrally managed (MDM-enrolled) or does not have full-disk encryption
+    enabled. The check is fail-closed: if no device inventory is collected the
+    control denies rather than passing silently.
+
+  rationale: |
+    Laptops and desktops that reach ePHI are the endpoints most likely to be lost
+    or stolen, and an unencrypted or unmanaged device turns a lost laptop into a
+    reportable breach. Full-disk encryption renders the data unreadable to a
+    thief, and MDM enrollment gives the organization the ability to enforce
+    configuration and remotely wipe the device — together they are the baseline
+    §164.310(c) safeguard for ePHI-capable workstations.
 
   evidence:
-    - id: hipaa_164_310c_workstation_security
-      source: aws
-      type: aws_resource_inventory
+    - id: managed_devices
+      source: okta
+      type: device_inventory
       fixture: ../tests/fixtures/hipaa-164-310c-workstation-security-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        include_attributes:
+          - disk_encryption
+          - mdm_enrolled
+          - accesses_ephi
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_310c_workstation_security
+    package: concord.hipaa.workstation_security
     file: ../policies/hipaa-164-310c-workstation-security.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-310c-workstation-security.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.310(c)"
+    soc2:
+      - "CC6.7"
+    nist_800_53:
+      - "AC-19"
+      - "SC-28"
+    iso27001:
+      - "A.8.1"
+
+  status: stable
+  blocking: true

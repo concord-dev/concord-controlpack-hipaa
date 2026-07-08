@@ -1,20 +1,59 @@
-package concord.hipaa.hipaa_164_308a1ii_risk_analysis
+package concord.hipaa.risk_analysis
 
 import rego.v1
-import data.concord.lib.attestation
-import data.concord.lib.evidence
+
+# HIPAA §164.308(a)(1)(ii)(A) — Risk Analysis.
+# The signed risk-analysis attestation must enumerate the assessment scope,
+# the in-scope assets, the identified threats and vulnerabilities, and the
+# likelihood/impact rating method, be reviewed within the last year, and
+# carry a verified signature.
+
+max_review_age_days := 365
+
+required_fields := {
+	"scope",
+	"assets_in_scope",
+	"threats_identified",
+	"vulnerabilities_identified",
+	"likelihood_impact_method",
+	"last_reviewed_at",
+}
+
+# missing is true when the field is absent, an empty string, an empty array,
+# or an empty object — an empty value is no better than an absent one.
+missing(obj, field) if not obj[field]
+
+missing(obj, field) if obj[field] == ""
+
+missing(obj, field) if obj[field] == []
+
+missing(obj, field) if obj[field] == {}
 
 deny contains msg if {
-	not evidence.present(input, "hipaa_164_308a1ii_risk_analysis")
-	msg := "HIPAA-164.308a1ii-risk-analysis: no signed attestation submitted"
+	not input.risk_analysis
+	msg := "no risk-analysis attestation found at policies/risk-analysis.yaml"
 }
 
 deny contains msg if {
-	not attestation.not_expired(input.hipaa_164_308a1ii_risk_analysis)
-	msg := sprintf("HIPAA-164.308a1ii-risk-analysis: attestation expired (expires_at=%s)", [input.hipaa_164_308a1ii_risk_analysis.expires_at])
+	input.risk_analysis
+	some field in required_fields
+	missing(input.risk_analysis, field)
+	msg := sprintf("risk-analysis attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	not attestation.fresh(input.hipaa_164_308a1ii_risk_analysis, 365)
-	msg := sprintf("HIPAA-164.308a1ii-risk-analysis: attestation not reviewed in 365 days (last_review_at=%s)", [input.hipaa_164_308a1ii_risk_analysis.last_review_at])
+	input.risk_analysis.review_age_days > max_review_age_days
+	msg := sprintf("risk-analysis last reviewed %d days ago — HIPAA requires review at least every 365 days", [input.risk_analysis.review_age_days])
+}
+
+deny contains msg if {
+	input.risk_analysis
+	not input.risk_analysis.signature_verified
+	msg := "risk-analysis attestation signature did not verify"
+}
+
+warn contains msg if {
+	input.risk_analysis.review_age_days > 300
+	input.risk_analysis.review_age_days <= max_review_age_days
+	msg := sprintf("risk-analysis was last reviewed %d days ago — schedule the annual review before it lapses at 365 days", [input.risk_analysis.review_age_days])
 }

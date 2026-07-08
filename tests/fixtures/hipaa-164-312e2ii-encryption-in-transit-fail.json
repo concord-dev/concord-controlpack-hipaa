@@ -1,8 +1,43 @@
 {
-  "hipaa_164_312e2ii_encryption_in_transit": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "fetched_at": "2026-06-28T11:00:00Z",
+  "buckets": [
+    {
+      "name": "phi-records",
+      "tags": {
+        "ephi": "true"
+      },
+      "policy": {
+        "Statement": [
+          {
+            "Sid": "AllowAppRead",
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": "arn:aws:iam::123456789012:role/app"
+            },
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::phi-records/*"
+          }
+        ]
+      }
+    }
+  ],
+  "load_balancers": [
+    {
+      "name": "phi-api-alb",
+      "tags": {
+        "ephi": "true"
+      },
+      "listeners": [
+        {
+          "port": 80,
+          "protocol": "HTTP"
+        },
+        {
+          "port": 443,
+          "protocol": "HTTPS",
+          "ssl_policy": "ELBSecurityPolicy-2016-08"
+        }
+      ]
+    }
+  ]
 }

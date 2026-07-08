@@ -3,38 +3,66 @@ kind: Control
 
 metadata:
   id: HIPAA-164.310b-workstation-use
-  name: hipaa-164-310b-workstation-use
-  title: Workstation use policy specifies acceptable functions and locations
+  name: workstation-use
+  title: A workstation use policy defines acceptable functions and approved locations for ePHI access
   framework: hipaa
-  severity: low
-  tags: []
+  category: Physical Safeguards
+  severity: medium
+  tags:
+    - hipaa
+    - physical-safeguards
+    - workstation
+    - acceptable-use
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.310b-workstation-use enforces.
+    HIPAA Security Rule §164.310(b) (Workstation Use) requires policies and
+    procedures that specify the proper functions to be performed, the manner in
+    which those functions are performed, and the physical attributes of the
+    surroundings of any workstation or class of workstation that can access ePHI.
+    Concord evaluates a signed, version-controlled attestation of the workstation
+    use policy. The attestation must enumerate acceptable uses, prohibited uses,
+    and the approved physical locations for ePHI access, and it must be reviewed
+    at least annually and cosign-verified.
+
+  rationale: |
+    Workstations are where ePHI is most often viewed, and a clear use policy is
+    what lets the workforce distinguish permitted work from risky behavior such as
+    accessing ePHI over public Wi-Fi or on shared kiosks. Auditors expect an
+    owner-attributed policy that states what may and may not be done on
+    ePHI-capable workstations and where they may be used, reviewed within the last
+    twelve months.
 
   evidence:
-    - id: hipaa_164_310b_workstation_use
-      source: attestation
-      type: policy_attestation
+    - id: workstation_use_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-310b-workstation-use-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/physical/workstation-use.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_310b_workstation_use
+    package: concord.hipaa.workstation_use
     file: ../policies/hipaa-164-310b-workstation-use.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-310b-workstation-use.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.310(b)"
+    soc2:
+      - "CC5.3"
+    nist_800_53:
+      - "PL-4"
+    iso27001:
+      - "A.8.1"
+
+  status: stable
+  blocking: true

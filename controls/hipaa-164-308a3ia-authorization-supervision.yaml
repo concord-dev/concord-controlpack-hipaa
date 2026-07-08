@@ -4,37 +4,69 @@ kind: Control
 metadata:
   id: HIPAA-164.308a3iA-authorization-supervision
   name: hipaa-164-308a3ia-authorization-supervision
-  title: Workforce supervision policy is documented and signed
+  title: Workforce authorization and supervision policy is documented and current
   framework: hipaa
+  category: Administrative Safeguards
   severity: medium
-  tags: []
+  tags:
+    - hipaa
+    - administrative-safeguards
+    - access-management
+    - workforce
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a3iA-authorization-supervision enforces.
+    HIPAA Security Rule §164.308(a)(3)(i) (Workforce Security) and its
+    addressable specification §164.308(a)(3)(ii)(A) (Authorization and/or
+    Supervision) require the organization to ensure that workforce members
+    have appropriate access to ePHI and that those working in areas where ePHI
+    might be accessed are supervised. This control reads a signed attestation
+    from the policy repository and confirms it documents how access is
+    authorized, how workforce members are supervised, and which role approves
+    access — and that it has been reviewed within the last year.
+
+  rationale: |
+    Authorization and supervision are the front door to every downstream
+    access control: if there is no documented, owner-approved process for
+    granting and overseeing access, then least-privilege, termination, and
+    audit controls have nothing to enforce against. Auditors look for a named
+    approving authority and a written supervision process, because "everyone
+    is an admin" and unsupervised contractor access are recurring root causes
+    of ePHI exposure.
 
   evidence:
-    - id: hipaa_164_308a3ia_authorization_supervision
-      source: attestation
-      type: policy_attestation
+    - id: authorization_supervision_policy
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a3ia-authorization-supervision-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/workforce-authorization-supervision.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a3ia_authorization_supervision
+    package: concord.hipaa.authorization_supervision
     file: ../policies/hipaa-164-308a3ia-authorization-supervision.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a3ia-authorization-supervision.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(3)(i)"
+      - "164.308(a)(3)(ii)(A)"
+    soc2:
+      - "CC6.3"
+    nist_800_53:
+      - "AC-2"
+      - "PS-2"
+    iso27001:
+      - "A.5.15"
+      - "A.5.18"
+
+  status: stable
+  blocking: true

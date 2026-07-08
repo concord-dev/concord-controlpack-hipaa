@@ -1,11 +1,40 @@
 {
-  "hipaa_164_312a2ii_emergency_access_procedure": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-22T08:30:00Z",
+  "roles": [
+    {
+      "role_name": "break-glass-admin",
+      "arn": "arn:aws:iam::123456789012:role/break-glass-admin",
+      "tags": {
+        "break_glass": "true"
+      },
+      "assume_role_policy": {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Effect": "Allow",
+            "Principal": {
+              "AWS": "arn:aws:iam::123456789012:root"
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {
+              "Bool": {
+                "aws:MultiFactorAuthPresent": "true"
+              }
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "alarms": [
+    {
+      "alarm_name": "break-glass-assumed",
+      "metric_name": "BreakGlassAssumeRoleCount",
+      "filter_pattern": "{ ($.eventName = AssumeRole) && ($.requestParameters.roleArn = \"*break-glass-admin\") }",
+      "actions_enabled": true,
+      "alarm_actions": [
+        "arn:aws:sns:us-east-1:123456789012:security-alerts"
+      ]
+    }
+  ]
 }

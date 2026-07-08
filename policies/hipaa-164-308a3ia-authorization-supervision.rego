@@ -1,20 +1,55 @@
-package concord.hipaa.hipaa_164_308a3ia_authorization_supervision
+package concord.hipaa.authorization_supervision
 
 import rego.v1
-import data.concord.lib.attestation
-import data.concord.lib.evidence
+
+# HIPAA §164.308(a)(3)(i) and §164.308(a)(3)(ii)(A) — Workforce Security:
+# Authorization and/or Supervision.
+# The signed attestation must document how access is authorized, how workforce
+# members are supervised, and the role that approves access, be reviewed within
+# the last year, and carry a verified signature.
+
+max_review_age_days := 365
+
+required_fields := {
+	"authorization_process",
+	"supervision_process",
+	"approver_role",
+	"last_reviewed_at",
+}
+
+missing(obj, field) if not obj[field]
+
+missing(obj, field) if obj[field] == ""
+
+missing(obj, field) if obj[field] == []
+
+missing(obj, field) if obj[field] == {}
 
 deny contains msg if {
-	not evidence.present(input, "hipaa_164_308a3ia_authorization_supervision")
-	msg := "HIPAA-164.308a3iA-authorization-supervision: no signed attestation submitted"
+	not input.authorization_supervision_policy
+	msg := "no authorization-and-supervision attestation found at policies/workforce-authorization-supervision.yaml"
 }
 
 deny contains msg if {
-	not attestation.not_expired(input.hipaa_164_308a3ia_authorization_supervision)
-	msg := sprintf("HIPAA-164.308a3iA-authorization-supervision: attestation expired (expires_at=%s)", [input.hipaa_164_308a3ia_authorization_supervision.expires_at])
+	input.authorization_supervision_policy
+	some field in required_fields
+	missing(input.authorization_supervision_policy, field)
+	msg := sprintf("authorization-and-supervision attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	not attestation.fresh(input.hipaa_164_308a3ia_authorization_supervision, 365)
-	msg := sprintf("HIPAA-164.308a3iA-authorization-supervision: attestation not reviewed in 365 days (last_review_at=%s)", [input.hipaa_164_308a3ia_authorization_supervision.last_review_at])
+	input.authorization_supervision_policy.review_age_days > max_review_age_days
+	msg := sprintf("authorization-and-supervision last reviewed %d days ago — HIPAA requires review at least every 365 days", [input.authorization_supervision_policy.review_age_days])
+}
+
+deny contains msg if {
+	input.authorization_supervision_policy
+	not input.authorization_supervision_policy.signature_verified
+	msg := "authorization-and-supervision attestation signature did not verify"
+}
+
+warn contains msg if {
+	input.authorization_supervision_policy.review_age_days > 300
+	input.authorization_supervision_policy.review_age_days <= max_review_age_days
+	msg := sprintf("authorization-and-supervision was last reviewed %d days ago — schedule the annual review before it lapses at 365 days", [input.authorization_supervision_policy.review_age_days])
 }

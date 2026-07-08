@@ -1,11 +1,13 @@
 {
-  "hipaa_164_310a1_facility_access_controls": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "fetched_at": "2026-06-20T09:00:00Z",
+  "owner": "Acme Health Facilities Security Manager",
+  "approval_date": "2024-02-10",
+  "last_reviewed_at": "2024-02-10",
+  "review_age_days": 861,
+  "access_control_measures": [
+    "Badge-reader access to the server room"
+  ],
+  "authorized_roles": [],
+  "visitor_policy": "",
+  "signature_verified": false
 }

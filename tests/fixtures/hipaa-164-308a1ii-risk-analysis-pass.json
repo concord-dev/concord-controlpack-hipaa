@@ -1,11 +1,27 @@
 {
-  "hipaa_164_308a1ii_risk_analysis": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "scope": "All systems that create, receive, maintain, or transmit ePHI across AWS us-east-1/us-west-2 and the on-prem clinic network",
+  "assets_in_scope": [
+    "EHR application (RDS Postgres ephi-prod)",
+    "S3 buckets tagged phi=true",
+    "clinician workstations",
+    "backup vault"
+  ],
+  "threats_identified": [
+    "ransomware and malware",
+    "phishing and credential theft",
+    "insider misuse",
+    "lost or stolen laptops",
+    "cloud misconfiguration"
+  ],
+  "vulnerabilities_identified": [
+    "unpatched workstation operating systems",
+    "over-broad IAM roles",
+    "legacy accounts without MFA"
+  ],
+  "likelihood_impact_method": "NIST SP 800-30 qualitative 1-5 likelihood x impact matrix",
+  "last_reviewed_at": "2026-05-01",
+  "review_age_days": 36,
+  "signature_verified": true,
+  "approving_authority": "Acme Health CISO"
 }

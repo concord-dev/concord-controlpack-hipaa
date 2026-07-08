@@ -3,38 +3,64 @@ kind: Control
 
 metadata:
   id: HIPAA-164.312a2iii-automatic-logoff
-  name: hipaa-164-312a2iii-automatic-logoff
-  title: Automatic session logoff is enforced on systems accessing ePHI
+  name: automatic-logoff
+  title: ePHI-scoped IAM roles cap session duration to enforce automatic logoff
   framework: hipaa
-  severity: low
-  tags: []
+  category: Technical Safeguards
+  severity: medium
+  tags:
+    - hipaa
+    - iam
+    - session
+    - automatic-logoff
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.312a2iii-automatic-logoff enforces.
+    HIPAA Security Rule §164.312(a)(2)(iii) (Automatic Logoff) requires
+    electronic procedures that terminate an electronic session after a
+    predetermined time of inactivity. For federated and assumed AWS access,
+    the ceiling on a session is the role's MaxSessionDuration. Concord fails
+    any IAM role tagged ephi=true whose max_session_duration_seconds exceeds
+    the 3600-second (one-hour) threshold, and fails closed on any ePHI role
+    that does not publish a max session duration at all.
+
+  rationale: |
+    A console or CLI session left open on an unattended workstation is a
+    direct exposure of ePHI; the shorter the maximum session, the smaller
+    that window. AWS defaults roles to a one-hour session but allows up to
+    twelve hours, and long-lived sessions are a recurring OCR finding because
+    they defeat the automatic-logoff safeguard. Bounding ePHI-scoped roles to
+    one hour forces re-authentication and keeps the effective session aligned
+    with §164.312(a)(2)(iii).
 
   evidence:
-    - id: hipaa_164_312a2iii_automatic_logoff
-      source: attestation
-      type: policy_attestation
+    - id: iam_roles
+      source: aws
+      type: iam_roles
       fixture: ../tests/fixtures/hipaa-164-312a2iii-automatic-logoff-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_312a2iii_automatic_logoff
+    package: concord.hipaa.automatic_logoff
     file: ../policies/hipaa-164-312a2iii-automatic-logoff.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-312a2iii-automatic-logoff.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 4h
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.312(a)(2)(iii)"
+    soc2:
+      - "CC6.1"
+    nist_800_53:
+      - "AC-11"
+      - "AC-12"
+
+  status: stable
+  blocking: true

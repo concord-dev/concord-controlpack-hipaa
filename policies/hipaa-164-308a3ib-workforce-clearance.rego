@@ -1,20 +1,54 @@
-package concord.hipaa.hipaa_164_308a3ib_workforce_clearance
+package concord.hipaa.workforce_clearance
 
 import rego.v1
-import data.concord.lib.attestation
-import data.concord.lib.evidence
+
+# HIPAA §164.308(a)(3)(ii)(B) — Workforce Clearance Procedure.
+# The signed attestation must document the clearance/screening procedure, the
+# roles it applies to, and the screening provider, be reviewed within the last
+# year, and carry a verified signature.
+
+max_review_age_days := 365
+
+required_fields := {
+	"clearance_procedure",
+	"roles_in_scope",
+	"screening_provider",
+	"last_reviewed_at",
+}
+
+missing(obj, field) if not obj[field]
+
+missing(obj, field) if obj[field] == ""
+
+missing(obj, field) if obj[field] == []
+
+missing(obj, field) if obj[field] == {}
 
 deny contains msg if {
-	not evidence.present(input, "hipaa_164_308a3ib_workforce_clearance")
-	msg := "HIPAA-164.308a3iB-workforce-clearance: no signed attestation submitted"
+	not input.workforce_clearance_policy
+	msg := "no workforce-clearance attestation found at policies/workforce-clearance.yaml"
 }
 
 deny contains msg if {
-	not attestation.not_expired(input.hipaa_164_308a3ib_workforce_clearance)
-	msg := sprintf("HIPAA-164.308a3iB-workforce-clearance: attestation expired (expires_at=%s)", [input.hipaa_164_308a3ib_workforce_clearance.expires_at])
+	input.workforce_clearance_policy
+	some field in required_fields
+	missing(input.workforce_clearance_policy, field)
+	msg := sprintf("workforce-clearance attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	not attestation.fresh(input.hipaa_164_308a3ib_workforce_clearance, 365)
-	msg := sprintf("HIPAA-164.308a3iB-workforce-clearance: attestation not reviewed in 365 days (last_review_at=%s)", [input.hipaa_164_308a3ib_workforce_clearance.last_review_at])
+	input.workforce_clearance_policy.review_age_days > max_review_age_days
+	msg := sprintf("workforce-clearance last reviewed %d days ago — HIPAA requires review at least every 365 days", [input.workforce_clearance_policy.review_age_days])
+}
+
+deny contains msg if {
+	input.workforce_clearance_policy
+	not input.workforce_clearance_policy.signature_verified
+	msg := "workforce-clearance attestation signature did not verify"
+}
+
+warn contains msg if {
+	input.workforce_clearance_policy.review_age_days > 300
+	input.workforce_clearance_policy.review_age_days <= max_review_age_days
+	msg := sprintf("workforce-clearance was last reviewed %d days ago — schedule the annual review before it lapses at 365 days", [input.workforce_clearance_policy.review_age_days])
 }

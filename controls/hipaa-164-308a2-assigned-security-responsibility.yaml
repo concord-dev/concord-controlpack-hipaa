@@ -4,37 +4,65 @@ kind: Control
 metadata:
   id: HIPAA-164.308a2-assigned-security-responsibility
   name: hipaa-164-308a2-assigned-security-responsibility
-  title: A named security official is responsible for the HIPAA program
+  title: A named Security Official is formally assigned responsibility for the HIPAA program
   framework: hipaa
+  category: Administrative Safeguards
   severity: high
-  tags: []
+  tags:
+    - hipaa
+    - administrative-safeguards
+    - governance
+    - accountability
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a2-assigned-security-responsibility enforces.
+    HIPAA Security Rule §164.308(a)(2) (Assigned Security Responsibility) is a
+    required implementation specification: the organization must identify the
+    single security official who is responsible for the development and
+    implementation of the policies and procedures required by the Security
+    Rule. This control reads a signed attestation from the policy repository
+    and confirms it records the official's name, title, appointment date, and
+    the scope of their responsibilities, and that it has been reviewed within
+    the last year.
+
+  rationale: |
+    A named, accountable owner is the anchor for every other Security Rule
+    safeguard — OCR investigators routinely ask "who is your Security
+    Official?" as the opening question of an audit, and an organization that
+    cannot point to one in writing has a per-se §164.308(a)(2) finding. Naming
+    a role rather than a person, or leaving the appointment stale after
+    turnover, are the two failure modes this control is designed to catch.
 
   evidence:
-    - id: hipaa_164_308a2_assigned_security_responsibility
-      source: attestation
-      type: policy_attestation
+    - id: security_official
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a2-assigned-security-responsibility-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/security-official.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a2_assigned_security_responsibility
+    package: concord.hipaa.assigned_security_responsibility
     file: ../policies/hipaa-164-308a2-assigned-security-responsibility.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a2-assigned-security-responsibility.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(2)"
+    soc2:
+      - "CC1.3"
+    nist_800_53:
+      - "PM-2"
+    iso27001:
+      - "A.5.2"
+
+  status: stable
+  blocking: true

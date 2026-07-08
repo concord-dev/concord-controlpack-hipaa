@@ -1,20 +1,64 @@
-package concord.hipaa.hipaa_164_308a3iic_termination_procedures
+package concord.hipaa.termination_procedures
 
 import rego.v1
-import data.concord.lib.attestation
-import data.concord.lib.evidence
+
+# HIPAA §164.308(a)(3)(ii)(C) — Termination Procedures.
+# The signed attestation must document the access-revocation steps, a numeric
+# completion SLA (hours), and the systems covered, be reviewed within the last
+# year, and carry a verified signature.
+
+max_review_age_days := 365
+
+# SLA above which access is left active long enough to warrant attention.
+warn_sla_hours := 72
+
+required_fields := {
+	"revocation_steps",
+	"sla_hours",
+	"systems_covered",
+	"last_reviewed_at",
+}
+
+missing(obj, field) if not obj[field]
+
+missing(obj, field) if obj[field] == ""
+
+missing(obj, field) if obj[field] == []
+
+missing(obj, field) if obj[field] == {}
 
 deny contains msg if {
-	not evidence.present(input, "hipaa_164_308a3iic_termination_procedures")
-	msg := "HIPAA-164.308a3iiC-termination-procedures: no signed attestation submitted"
+	not input.termination_procedure
+	msg := "no termination-procedure attestation found at policies/access-termination-procedure.yaml"
 }
 
 deny contains msg if {
-	not attestation.not_expired(input.hipaa_164_308a3iic_termination_procedures)
-	msg := sprintf("HIPAA-164.308a3iiC-termination-procedures: attestation expired (expires_at=%s)", [input.hipaa_164_308a3iic_termination_procedures.expires_at])
+	input.termination_procedure
+	some field in required_fields
+	missing(input.termination_procedure, field)
+	msg := sprintf("termination-procedure attestation is missing required field %q", [field])
+}
+
+# sla_hours must be a number so the revocation window is actually measurable.
+deny contains msg if {
+	input.termination_procedure.sla_hours
+	not is_number(input.termination_procedure.sla_hours)
+	msg := "termination-procedure sla_hours must be a numeric value expressed in hours"
 }
 
 deny contains msg if {
-	not attestation.fresh(input.hipaa_164_308a3iic_termination_procedures, 365)
-	msg := sprintf("HIPAA-164.308a3iiC-termination-procedures: attestation not reviewed in 365 days (last_review_at=%s)", [input.hipaa_164_308a3iic_termination_procedures.last_review_at])
+	input.termination_procedure.review_age_days > max_review_age_days
+	msg := sprintf("termination-procedure last reviewed %d days ago — HIPAA requires review at least every 365 days", [input.termination_procedure.review_age_days])
+}
+
+deny contains msg if {
+	input.termination_procedure
+	not input.termination_procedure.signature_verified
+	msg := "termination-procedure attestation signature did not verify"
+}
+
+warn contains msg if {
+	is_number(input.termination_procedure.sla_hours)
+	input.termination_procedure.sla_hours > warn_sla_hours
+	msg := sprintf("termination-procedure allows %d hours to revoke access — OCR guidance expects prompt, typically same-day, deactivation", [input.termination_procedure.sla_hours])
 }

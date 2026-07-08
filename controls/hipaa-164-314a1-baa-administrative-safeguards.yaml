@@ -4,37 +4,67 @@ kind: Control
 metadata:
   id: HIPAA-164.314a1-baa-administrative-safeguards
   name: hipaa-164-314a1-baa-administrative-safeguards
-  title: BAA administrative safeguard clauses cover required topics
+  title: Business associate agreements cover the required administrative-safeguard clauses
   framework: hipaa
+  category: Administrative Safeguards
   severity: medium
-  tags: []
+  tags:
+    - hipaa
+    - business-associate
+    - contract
+    - administrative
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.314a1-baa-administrative-safeguards enforces.
+    HIPAA Security Rule §164.314(a)(1) (Organizational Requirements — Business
+    Associate Contracts) requires that the contract between a covered entity
+    and a business associate include specific assurances: that the associate
+    will implement safeguards protecting ePHI, report security incidents,
+    ensure any subcontractors agree to the same restrictions, and authorize
+    termination of the contract for material breach. Concord reads a
+    cosign-verified attestation confirming that the organisation's BAA
+    template covers each of these clauses and was reviewed within the year.
+
+  rationale: |
+    A signed BAA that omits the safeguards, breach-notification,
+    subcontractor-flowdown, or termination clauses fails to provide the
+    "satisfactory assurances" the rule demands, leaving the covered entity
+    liable for the associate's conduct. Verifying clause coverage per topic —
+    rather than trusting that a contract exists — catches template drift and
+    ensures the flowdown obligations that protect ePHI down the subcontractor
+    chain are actually present.
 
   evidence:
-    - id: hipaa_164_314a1_baa_administrative_safeguards
-      source: attestation
-      type: policy_attestation
+    - id: baa_clause_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-314a1-baa-administrative-safeguards-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "compliance/baa-clause-attestation.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_314a1_baa_administrative_safeguards
+    package: concord.hipaa.baa_administrative_safeguards
     file: ../policies/hipaa-164-314a1-baa-administrative-safeguards.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-314a1-baa-administrative-safeguards.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.314(a)(1)"
+      - "164.314(a)(2)(i)"
+    soc2:
+      - "CC9.2"
+    nist_800_53:
+      - "SA-9"
+    iso27001:
+      - "A.5.20"
+
+  status: stable
+  blocking: true

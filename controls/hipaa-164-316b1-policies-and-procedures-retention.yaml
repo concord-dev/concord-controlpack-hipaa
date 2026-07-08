@@ -3,38 +3,67 @@ kind: Control
 
 metadata:
   id: HIPAA-164.316b1-policies-and-procedures-retention
-  name: hipaa-164-316b1-policies-and-procedures-retention
-  title: HIPAA policies are retained for 6 years per §164.316(b)
+  name: policies-and-procedures-retention
+  title: HIPAA policies, procedures, and required documentation are retained for at least six years
   framework: hipaa
-  severity: low
-  tags: []
+  category: Administrative Safeguards
+  severity: medium
+  tags:
+    - hipaa
+    - administrative-safeguards
+    - documentation
+    - retention
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.316b1-policies-and-procedures-retention enforces.
+    HIPAA Security Rule §164.316(b)(1) requires that the policies and procedures
+    implemented to comply with the Security Rule, and the documentation of
+    required actions, activities, and assessments, be maintained in writing.
+    §164.316(b)(2)(i) sets the retention period at six years from the date of
+    creation or the date it was last in effect, whichever is later. Concord
+    evaluates a signed, version-controlled attestation that records the enforced
+    retention period and an inventory of the retained documents, and fails if the
+    retention period is shorter than six years.
+
+  rationale: |
+    OCR can request years of documentation during an investigation or audit, and
+    a retention window shorter than the six-year floor leaves the organization
+    unable to demonstrate that safeguards were in place at the relevant time.
+    Auditors expect an accountable owner, a documented retention period of at
+    least six years, and a maintained inventory of the policies and procedures
+    that are actually being retained, reviewed at least annually.
 
   evidence:
-    - id: hipaa_164_316b1_policies_and_procedures_retention
-      source: attestation
-      type: policy_attestation
+    - id: retention_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-316b1-policies-and-procedures-retention-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/governance/documentation-retention.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_316b1_policies_and_procedures_retention
+    package: concord.hipaa.policies_retention
     file: ../policies/hipaa-164-316b1-policies-and-procedures-retention.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-316b1-policies-and-procedures-retention.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.316(b)(1)"
+      - "164.316(b)(2)(i)"
+    soc2:
+      - "CC5.3"
+    nist_800_53:
+      - "SI-12"
+    iso27001:
+      - "A.5.33"
+
+  status: stable
+  blocking: true

@@ -1,11 +1,22 @@
 {
-  "hipaa_164_310b_workstation_use": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-20T09:00:00Z",
+  "owner": "Acme Health Information Security Officer",
+  "approval_date": "2026-01-20",
+  "last_reviewed_at": "2026-06-05",
+  "review_age_days": 15,
+  "acceptable_use": [
+    "Accessing the EHR and ticketing systems required for the assigned role",
+    "Screen auto-lock after five minutes of inactivity",
+    "Storing ePHI only in approved, encrypted network locations"
+  ],
+  "prohibited_use": [
+    "Accessing ePHI over untrusted or public Wi-Fi without the corporate VPN",
+    "Installing unapproved software or disabling endpoint agents",
+    "Copying ePHI to personal or removable media"
+  ],
+  "approved_locations": [
+    "Corporate offices",
+    "Home offices meeting the remote-work security standard"
+  ],
+  "signature_verified": true
 }

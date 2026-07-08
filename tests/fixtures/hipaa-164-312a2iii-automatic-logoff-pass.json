@@ -1,11 +1,29 @@
 {
-  "hipaa_164_312a2iii_automatic_logoff": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-25T14:00:00Z",
+  "roles": [
+    {
+      "role_name": "phi-clinician",
+      "arn": "arn:aws:iam::123456789012:role/phi-clinician",
+      "tags": {
+        "ephi": "true"
+      },
+      "max_session_duration_seconds": 3600
+    },
+    {
+      "role_name": "phi-analyst",
+      "arn": "arn:aws:iam::123456789012:role/phi-analyst",
+      "tags": {
+        "ephi": "true"
+      },
+      "max_session_duration_seconds": 1800
+    },
+    {
+      "role_name": "batch-etl",
+      "arn": "arn:aws:iam::123456789012:role/batch-etl",
+      "tags": {
+        "ephi": "false"
+      },
+      "max_session_duration_seconds": 43200
+    }
+  ]
 }

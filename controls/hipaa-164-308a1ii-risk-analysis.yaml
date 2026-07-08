@@ -4,37 +4,70 @@ kind: Control
 metadata:
   id: HIPAA-164.308a1ii-risk-analysis
   name: hipaa-164-308a1ii-risk-analysis
-  title: Risk analysis covering ePHI confidentiality / integrity / availability is current
+  title: Risk analysis covering ePHI confidentiality, integrity, and availability is current
   framework: hipaa
+  category: Administrative Safeguards
   severity: high
-  tags: []
+  tags:
+    - hipaa
+    - administrative-safeguards
+    - risk-analysis
+    - governance
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a1ii-risk-analysis enforces.
+    HIPAA Security Rule §164.308(a)(1)(ii)(A) (Risk Analysis) requires an
+    accurate and thorough assessment of the potential risks and
+    vulnerabilities to the confidentiality, integrity, and availability of all
+    ePHI the organization creates, receives, maintains, or transmits. This
+    control reads a signed risk-analysis attestation from the policy
+    repository and confirms it enumerates the assessment scope, the assets in
+    scope, the threats and vulnerabilities identified, and the method used to
+    rate likelihood and impact. It is deliberately distinct from the
+    risk-management plan under §164.308(a)(1)(ii)(B): this control verifies the
+    analysis itself, not the treatment of the risks it surfaces.
+
+  rationale: |
+    OCR treats risk analysis as the foundational safeguard of the entire
+    Security Rule — the majority of corrective-action plans in OCR enforcement
+    settlements cite an incomplete, out-of-date, or organization-wide-in-name-only
+    risk analysis as a root cause. Auditors expect the analysis to cover every
+    system that touches ePHI rather than a single application, to be reviewed at
+    least annually, and to carry an accountable owner's verified signature so its
+    conclusions can be relied on by the downstream risk-management plan.
 
   evidence:
-    - id: hipaa_164_308a1ii_risk_analysis
-      source: attestation
-      type: policy_attestation
+    - id: risk_analysis
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a1ii-risk-analysis-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/risk-analysis.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a1ii_risk_analysis
+    package: concord.hipaa.risk_analysis
     file: ../policies/hipaa-164-308a1ii-risk-analysis.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a1ii-risk-analysis.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 2d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(1)(ii)(A)"
+    soc2:
+      - "CC3.1"
+      - "CC3.2"
+    nist_800_53:
+      - "RA-3"
+    iso27001:
+      - "A.5.9"
+      - "A.8.8"
+
+  status: stable
+  blocking: true

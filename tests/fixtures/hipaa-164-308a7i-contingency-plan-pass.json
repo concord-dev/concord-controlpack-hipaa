@@ -1,11 +1,10 @@
 {
-  "hipaa_164_308a7i_contingency_plan": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "data_backup_plan": "Nightly encrypted RDS + S3 snapshots retained 35 days, replicated cross-region",
+  "disaster_recovery_plan": "Warm standby in us-west-2, RTO 4h / RPO 1h, runbook DR-01",
+  "emergency_mode_plan": "Break-glass read-only ePHI access with mandatory post-event review",
+  "last_tested_at": "2026-03-20",
+  "last_reviewed_at": "2026-05-01",
+  "review_age_days": 68,
+  "signature_verified": true
 }

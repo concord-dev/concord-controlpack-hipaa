@@ -4,37 +4,68 @@ kind: Control
 metadata:
   id: HIPAA-164.308a3iiC-termination-procedures
   name: hipaa-164-308a3iic-termination-procedures
-  title: Access-revocation procedure for departing workforce is documented
+  title: Access-revocation procedure for departing workforce is documented and current
   framework: hipaa
+  category: Administrative Safeguards
   severity: high
-  tags: []
+  tags:
+    - hipaa
+    - administrative-safeguards
+    - workforce
+    - deprovisioning
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a3iiC-termination-procedures enforces.
+    HIPAA Security Rule §164.308(a)(3)(ii)(C) (Termination Procedures) is an
+    addressable specification requiring procedures for terminating access to
+    ePHI when a workforce member leaves or when their access is no longer
+    appropriate. This control reads a signed attestation from the policy
+    repository and confirms it documents the revocation steps, the target
+    completion SLA in hours, and the systems the procedure covers, and that it
+    has been reviewed within the last year. It complements the technical
+    workforce-termination control by verifying that the governing procedure
+    itself exists and is maintained.
+
+  rationale: |
+    Orphaned accounts and lingering access after departure are among the most
+    frequently cited findings in OCR investigations and breach post-mortems.
+    A credible termination procedure names the concrete steps, a measurable
+    time bound, and the full set of systems in scope — otherwise "we revoke
+    access on termination" is unverifiable. This control checks that the
+    procedure is specific, time-bound, and current rather than aspirational.
 
   evidence:
-    - id: hipaa_164_308a3iic_termination_procedures
-      source: attestation
-      type: policy_attestation
+    - id: termination_procedure
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a3iic-termination-procedures-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/access-termination-procedure.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a3iic_termination_procedures
+    package: concord.hipaa.termination_procedures
     file: ../policies/hipaa-164-308a3iic-termination-procedures.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a3iic-termination-procedures.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(3)(ii)(C)"
+    soc2:
+      - "CC6.2"
+      - "CC6.3"
+    nist_800_53:
+      - "PS-4"
+      - "AC-2"
+    iso27001:
+      - "A.6.5"
+
+  status: stable
+  blocking: true

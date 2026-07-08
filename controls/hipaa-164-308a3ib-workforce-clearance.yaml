@@ -4,37 +4,65 @@ kind: Control
 metadata:
   id: HIPAA-164.308a3iB-workforce-clearance
   name: hipaa-164-308a3ib-workforce-clearance
-  title: Workforce clearance procedures (background checks) are documented
+  title: Workforce clearance procedure (background screening) is documented and current
   framework: hipaa
+  category: Administrative Safeguards
   severity: medium
-  tags: []
+  tags:
+    - hipaa
+    - administrative-safeguards
+    - workforce
+    - screening
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a3iB-workforce-clearance enforces.
+    HIPAA Security Rule §164.308(a)(3)(ii)(B) (Workforce Clearance Procedure)
+    is an addressable specification requiring procedures to determine that a
+    workforce member's access to ePHI is appropriate. In practice this is the
+    pre-access background-screening and clearance process. This control reads
+    a signed attestation from the policy repository and confirms it documents
+    the clearance procedure, the roles it applies to, and the screening
+    provider, and that it has been reviewed within the last year.
+
+  rationale: |
+    Granting ePHI access before establishing that a person is suitable for it
+    inverts the trust model the Security Rule assumes. OCR and downstream
+    frameworks expect the clearance procedure to be written, to name the roles
+    in scope (so high-privilege roles are not quietly exempted), and to
+    identify who performs the screening so the control can be audited rather
+    than merely asserted. Stale or role-silent procedures are the failure
+    modes this control catches.
 
   evidence:
-    - id: hipaa_164_308a3ib_workforce_clearance
-      source: attestation
-      type: policy_attestation
+    - id: workforce_clearance_policy
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a3ib-workforce-clearance-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/workforce-clearance.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a3ib_workforce_clearance
+    package: concord.hipaa.workforce_clearance
     file: ../policies/hipaa-164-308a3ib-workforce-clearance.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a3ib-workforce-clearance.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(3)(ii)(B)"
+    soc2:
+      - "CC1.4"
+    nist_800_53:
+      - "PS-3"
+    iso27001:
+      - "A.6.1"
+
+  status: stable
+  blocking: true

@@ -1,11 +1,19 @@
 {
-  "hipaa_164_310a1_facility_access_controls": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-20T09:00:00Z",
+  "owner": "Acme Health Facilities Security Manager",
+  "approval_date": "2026-01-10",
+  "last_reviewed_at": "2026-06-01",
+  "review_age_days": 19,
+  "access_control_measures": [
+    "Badge-reader access to the server room restricted to the physical-security ACL",
+    "ePHI hardware housed in locked, individually keyed cages",
+    "24x7 CCTV coverage of all entrances with 90-day retention"
+  ],
+  "authorized_roles": [
+    "infrastructure-engineer",
+    "facilities-security",
+    "on-call-sre"
+  ],
+  "visitor_policy": "All visitors sign in at reception, are issued a temporary badge, and are escorted by an authorized employee at all times inside ePHI areas.",
+  "signature_verified": true
 }

@@ -3,36 +3,71 @@ kind: Control
 
 metadata:
   id: HIPAA-164.312e2ii-encryption-in-transit
-  name: hipaa-164-312e2ii-encryption-in-transit
+  name: encryption-in-transit
   title: TLS 1.2+ is enforced on every ePHI transmission endpoint
   framework: hipaa
+  category: Technical Safeguards
   severity: critical
-  tags: []
+  tags:
+    - hipaa
+    - encryption
+    - transmission
+    - tls
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.312e2ii-encryption-in-transit enforces.
+    HIPAA Security Rule §164.312(e)(2)(ii) (Encryption) implements the
+    Transmission Security standard by requiring encryption of ePHI whenever
+    it is transmitted over an electronic network. Concord inspects the two
+    endpoints that carry ePHI in a typical AWS estate: S3 buckets tagged
+    ephi=true and Elastic Load Balancer listeners on load balancers tagged
+    ephi=true. A bucket must carry a policy that denies requests where
+    aws:SecureTransport is false; a listener must speak HTTPS/TLS with a
+    security policy whose minimum protocol is TLS 1.2. Plaintext listeners,
+    weak TLS policies, and buckets without the SecureTransport deny all fail.
+
+  rationale: |
+    AWS permits TLS but does not force it — an S3 bucket without a
+    SecureTransport deny will happily serve ePHI over plaintext HTTP, and an
+    ELB listener pinned to an ELBSecurityPolicy that still allows TLS 1.0/1.1
+    is vulnerable to well-known downgrade and BEAST-class attacks. OCR's
+    guidance on ePHI in the cloud treats unenforced transport encryption as a
+    reportable exposure, so the enforcement mechanism (bucket-policy deny and
+    a TLS-1.2-minimum listener policy) must be present, not merely available.
+    The check fails closed: missing evidence or an unrecognised TLS policy
+    denies.
 
   evidence:
-    - id: hipaa_164_312e2ii_encryption_in_transit
+    - id: ephi_endpoints
       source: aws
-      type: aws_resource_inventory
+      type: aws_tls_endpoints
       fixture: ../tests/fixtures/hipaa-164-312e2ii-encryption-in-transit-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_312e2ii_encryption_in_transit
+    package: concord.hipaa.encryption_in_transit
     file: ../policies/hipaa-164-312e2ii-encryption-in-transit.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-312e2ii-encryption-in-transit.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.312(e)(1)"
+      - "164.312(e)(2)(ii)"
+    soc2:
+      - "CC6.7"
+    nist_800_53:
+      - "SC-8"
+      - "SC-13"
+    cis_aws:
+      - "2.1.1"
+
+  status: stable
+  blocking: true

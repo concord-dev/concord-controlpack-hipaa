@@ -4,37 +4,66 @@ kind: Control
 metadata:
   id: HIPAA-164.308a5iiA-security-reminders
   name: hipaa-164-308a5iia-security-reminders
-  title: Periodic security reminders are distributed to the workforce
+  title: Periodic security-awareness reminders are distributed to the workforce
   framework: hipaa
-  severity: low
-  tags: []
+  category: Administrative Safeguards
+  severity: medium
+  tags:
+    - hipaa
+    - awareness
+    - training
+    - administrative
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a5iiA-security-reminders enforces.
+    HIPAA Security Rule §164.308(a)(5)(ii)(A) (Security Reminders) is an
+    addressable implementation specification of the Security Awareness and
+    Training standard requiring periodic security updates to the workforce.
+    Concord reads a cosign-verified attestation from the policy repository
+    that records the reminder cadence, the topics covered, the intended
+    audience, and the date reminders were last distributed. A reminder
+    program that is undocumented or more than twelve months stale is treated
+    as a control failure.
+
+  rationale: |
+    Workforce members are the most frequently exploited path to ePHI, and OCR
+    corrective-action plans routinely require an ongoing awareness program
+    rather than a one-time onboarding briefing. Recording the cadence,
+    audience, and topics — and attesting to them with a verifiable signature —
+    demonstrates that reminders are current, reach everyone who touches ePHI,
+    and cover the threats (phishing, credential hygiene, incident reporting)
+    that drive real breaches.
 
   evidence:
-    - id: hipaa_164_308a5iia_security_reminders
-      source: attestation
-      type: policy_attestation
+    - id: security_reminders_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a5iia-security-reminders-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/security-awareness-reminders.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a5iia_security_reminders
+    package: concord.hipaa.security_reminders
     file: ../policies/hipaa-164-308a5iia-security-reminders.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a5iia-security-reminders.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(5)(ii)(A)"
+    soc2:
+      - "CC2.2"
+    nist_800_53:
+      - "AT-2"
+    iso27001:
+      - "A.6.3"
+
+  status: stable
+  blocking: true

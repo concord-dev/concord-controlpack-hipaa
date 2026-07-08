@@ -3,38 +3,66 @@ kind: Control
 
 metadata:
   id: HIPAA-164.310a2i-contingency-operations
-  name: hipaa-164-310a2i-contingency-operations
-  title: Facility access during emergencies is documented and tested
+  name: contingency-operations
+  title: Facility access during emergencies is documented and periodically tested
   framework: hipaa
+  category: Physical Safeguards
   severity: medium
-  tags: []
+  tags:
+    - hipaa
+    - physical-safeguards
+    - contingency
+    - disaster-recovery
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.310a2i-contingency-operations enforces.
+    HIPAA Security Rule §164.310(a)(2)(i) (Contingency Operations) requires
+    procedures that allow facility access to support the restoration of lost
+    data under the disaster-recovery plan and emergency-mode operations plan
+    in the event of an emergency. Concord evaluates a signed, version-controlled
+    attestation of the emergency facility-access procedure. The attestation must
+    name the emergency access procedure and the responsible role, record when
+    the procedure was last exercised, and be reviewed at least annually and
+    cosign-verified.
+
+  rationale: |
+    An emergency such as a fire, flood, or extended power loss can force
+    physical access to systems and backup media outside normal controls; if
+    that access is undocumented or has never been rehearsed, recovery stalls
+    and ePHI availability is lost. Auditors expect a named, accountable owner,
+    a written emergency access procedure, and evidence that it has been tested
+    within the last year so the plan works when it is actually needed.
 
   evidence:
-    - id: hipaa_164_310a2i_contingency_operations
-      source: attestation
-      type: policy_attestation
+    - id: contingency_operations_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-310a2i-contingency-operations-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/physical/contingency-operations.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_310a2i_contingency_operations
+    package: concord.hipaa.contingency_operations
     file: ../policies/hipaa-164-310a2i-contingency-operations.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-310a2i-contingency-operations.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.310(a)(2)(i)"
+    soc2:
+      - "A1.2"
+    nist_800_53:
+      - "CP-2"
+    iso27001:
+      - "A.5.29"
+
+  status: stable
+  blocking: true

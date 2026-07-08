@@ -1,11 +1,13 @@
 {
-  "hipaa_164_316b1_policies_and_procedures_retention": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2023-01-01T00:00:00Z",
-    "expires_at": "2024-06-01T00:00:00Z",
-    "attested_fields": ["scope"]
-  }
+  "fetched_at": "2026-06-20T09:00:00Z",
+  "owner": "Acme Health Compliance Officer",
+  "approval_date": "2024-02-15",
+  "last_reviewed_at": "2024-02-15",
+  "review_age_days": 856,
+  "retention_years": 3,
+  "document_inventory": [
+    "Information Security Policy",
+    "Risk Analysis and Risk Management Plan"
+  ],
+  "signature_verified": true
 }

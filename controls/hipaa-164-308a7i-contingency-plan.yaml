@@ -4,37 +4,70 @@ kind: Control
 metadata:
   id: HIPAA-164.308a7i-contingency-plan
   name: hipaa-164-308a7i-contingency-plan
-  title: Contingency plan covering data backup, DR, and emergency mode is current
+  title: A contingency plan covering data backup, disaster recovery, and emergency mode is current
   framework: hipaa
+  category: Administrative Safeguards
   severity: high
-  tags: []
+  tags:
+    - hipaa
+    - contingency
+    - resilience
+    - administrative
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a7i-contingency-plan enforces.
+    HIPAA Security Rule §164.308(a)(7)(i) (Contingency Plan) requires policies
+    and procedures for responding to an emergency or other occurrence that
+    damages systems containing ePHI. Its implementation specifications mandate
+    a data backup plan, a disaster recovery plan, and an emergency mode
+    operation plan. Concord reads a cosign-verified attestation recording each
+    of these plans plus the dates the contingency plan was last tested and
+    last reviewed, and fails when any element is missing or stale.
+
+  rationale: |
+    Ransomware and infrastructure failures are leading causes of ePHI
+    unavailability, and §164.308(a)(7)(ii)(D) additionally requires periodic
+    testing and revision of contingency procedures. A backup that has never
+    been restore-tested, or a recovery plan that is more than a year old,
+    offers false assurance. Requiring all three plans, a recorded test date,
+    and a verifiable signature keeps the organisation's resilience posture
+    honest and auditable.
 
   evidence:
-    - id: hipaa_164_308a7i_contingency_plan
-      source: attestation
-      type: policy_attestation
+    - id: contingency_plan_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a7i-contingency-plan-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/contingency-plan.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a7i_contingency_plan
+    package: concord.hipaa.contingency_plan
     file: ../policies/hipaa-164-308a7i-contingency-plan.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a7i-contingency-plan.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 5d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(7)(i)"
+      - "164.308(a)(7)(ii)(D)"
+    soc2:
+      - "A1.2"
+      - "A1.3"
+    nist_800_53:
+      - "CP-2"
+      - "CP-4"
+      - "CP-9"
+    iso27001:
+      - "A.5.30"
+      - "A.8.13"
+
+  status: stable
+  blocking: true

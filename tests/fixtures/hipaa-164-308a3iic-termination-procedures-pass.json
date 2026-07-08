@@ -1,11 +1,21 @@
 {
-  "hipaa_164_308a3iic_termination_procedures": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-06T10:00:00Z",
+  "revocation_steps": [
+    "HR files the termination in the HRIS, which triggers an offboarding ticket",
+    "IdP account is disabled and all active sessions are revoked",
+    "SSO-federated and local application accounts are deactivated",
+    "Badge and VPN access are revoked and issued devices are collected",
+    "Completion is verified against the systems-covered checklist and recorded"
+  ],
+  "sla_hours": 24,
+  "systems_covered": [
+    "Okta identity provider",
+    "EHR application",
+    "AWS IAM and console",
+    "email and collaboration suite",
+    "VPN and physical badge system"
+  ],
+  "last_reviewed_at": "2026-05-10",
+  "review_age_days": 27,
+  "signature_verified": true
 }

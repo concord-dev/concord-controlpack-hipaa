@@ -1,8 +1,8 @@
 {
-  "hipaa_164_310c_workstation_security": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "resources": [
-      { "arn": "arn:aws:s3:::acme-logs", "compliant": false, "reason": "public access block disabled" }
-    ]
-  }
+  "fetched_at": "2026-06-18T08:00:00Z",
+  "devices": [
+    { "id": "MBP-ENG-014", "os": "macOS 14.5", "disk_encryption": true, "mdm_enrolled": true, "accesses_ephi": true },
+    { "id": "MBP-CONTRACTOR-3", "os": "macOS 13.2", "disk_encryption": false, "mdm_enrolled": true, "accesses_ephi": true },
+    { "id": "WKS-BILLING-88", "os": "Windows 11", "disk_encryption": true, "mdm_enrolled": false, "accesses_ephi": true }
+  ]
 }

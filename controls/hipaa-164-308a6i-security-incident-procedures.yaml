@@ -4,37 +4,69 @@ kind: Control
 metadata:
   id: HIPAA-164.308a6i-security-incident-procedures
   name: hipaa-164-308a6i-security-incident-procedures
-  title: Documented incident response procedure exists and is reviewed annually
+  title: A documented incident-response procedure exists and is reviewed annually
   framework: hipaa
+  category: Administrative Safeguards
   severity: high
-  tags: []
+  tags:
+    - hipaa
+    - incident-response
+    - administrative
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a6i-security-incident-procedures enforces.
+    HIPAA Security Rule §164.308(a)(6)(i) (Security Incident Procedures)
+    requires covered entities and business associates to implement policies
+    and procedures to address security incidents. Concord reads a
+    cosign-verified attestation from the policy repository that records the
+    procedure's scope, the roles and responsibilities of responders, how
+    incidents are detected and reported, and the escalation path. The
+    procedure must have been both reviewed and exercised within the last
+    twelve months.
+
+  rationale: |
+    Under §164.308(a)(6)(ii) an entity must identify, respond to, mitigate,
+    and document security incidents; that is impossible without a written
+    procedure that names owners and an escalation path in advance of an
+    event. OCR breach investigations consistently penalise organisations that
+    cannot produce a current, tested incident-response plan, so Concord fails
+    the control when any required element is missing, when the plan is stale,
+    or when the attestation signature does not verify.
 
   evidence:
-    - id: hipaa_164_308a6i_security_incident_procedures
-      source: attestation
-      type: policy_attestation
+    - id: incident_response_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a6i-security-incident-procedures-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/incident-response-plan.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a6i_security_incident_procedures
+    package: concord.hipaa.security_incident_procedures
     file: ../policies/hipaa-164-308a6i-security-incident-procedures.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a6i-security-incident-procedures.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 3d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(6)(i)"
+      - "164.308(a)(6)(ii)"
+    soc2:
+      - "CC7.3"
+      - "CC7.4"
+    nist_800_53:
+      - "IR-4"
+      - "IR-8"
+    iso27001:
+      - "A.5.24"
+      - "A.5.26"
+
+  status: stable
+  blocking: true

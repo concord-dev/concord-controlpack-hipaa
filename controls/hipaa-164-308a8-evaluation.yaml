@@ -4,37 +4,66 @@ kind: Control
 metadata:
   id: HIPAA-164.308a8-evaluation
   name: hipaa-164-308a8-evaluation
-  title: Periodic technical and non-technical security evaluation is performed
+  title: A periodic technical and non-technical security evaluation is performed and remediated
   framework: hipaa
+  category: Administrative Safeguards
   severity: medium
-  tags: []
+  tags:
+    - hipaa
+    - evaluation
+    - assessment
+    - administrative
   owners:
-    - team: concord-dev
+    - team: compliance
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.308a8-evaluation enforces.
+    HIPAA Security Rule §164.308(a)(8) (Evaluation) requires a periodic
+    technical and non-technical evaluation, based initially on the standards
+    of the Security Rule and subsequently on environmental or operational
+    changes, that establishes the extent to which an entity's safeguards meet
+    the rule's requirements. Concord reads a cosign-verified attestation
+    recording the date of the last evaluation, who performed it, its scope,
+    and whether the resulting findings were remediated.
+
+  rationale: |
+    An evaluation is only meaningful if it is current, independent, scoped to
+    the systems that handle ePHI, and — critically — acted upon. A finding
+    that is identified but never remediated leaves the same gap an auditor
+    would cite. Concord therefore fails the control when the evaluation is
+    missing, stale beyond twelve months, lacks a named evaluator or scope, or
+    when the attestation does not confirm that findings were remediated.
 
   evidence:
-    - id: hipaa_164_308a8_evaluation
-      source: attestation
-      type: policy_attestation
+    - id: security_evaluation_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-308a8-evaluation-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/security-evaluation.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_308a8_evaluation
+    package: concord.hipaa.security_evaluation
     file: ../policies/hipaa-164-308a8-evaluation.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-308a8-evaluation.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 3d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.308(a)(8)"
+    soc2:
+      - "CC4.1"
+    nist_800_53:
+      - "CA-2"
+      - "CA-7"
+    iso27001:
+      - "A.5.35"
+      - "A.5.36"
+
+  status: stable
+  blocking: true

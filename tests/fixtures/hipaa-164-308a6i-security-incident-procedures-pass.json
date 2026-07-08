@@ -1,11 +1,11 @@
 {
-  "hipaa_164_308a6i_security_incident_procedures": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-20T10:00:00Z",
+  "scope": "all systems processing, storing, or transmitting ePHI",
+  "roles_responsibilities": "Incident commander (CISO), triage (SecOps on-call), comms (Privacy Officer)",
+  "detection_reporting": "SIEM alerts and the security@acme.com hotline open a PagerDuty incident",
+  "escalation_path": "on-call -> SecOps lead -> CISO -> executive/legal within 1 hour for confirmed PHI exposure",
+  "last_reviewed_at": "2026-05-15",
+  "last_tested_at": "2026-04-10",
+  "review_age_days": 54,
+  "signature_verified": true
 }

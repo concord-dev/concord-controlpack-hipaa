@@ -3,38 +3,66 @@ kind: Control
 
 metadata:
   id: HIPAA-164.310a2ii-facility-security-plan
-  name: hipaa-164-310a2ii-facility-security-plan
-  title: Written facility security plan is current and reviewed
+  name: facility-security-plan
+  title: A written facility security plan protects premises and equipment from theft and tampering
   framework: hipaa
-  severity: low
-  tags: []
+  category: Physical Safeguards
+  severity: medium
+  tags:
+    - hipaa
+    - physical-safeguards
+    - facility-security
   owners:
-    - team: concord-dev
+    - team: security
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.310a2ii-facility-security-plan enforces.
+    HIPAA Security Rule §164.310(a)(2)(ii) (Facility Security Plan) requires
+    policies and procedures to safeguard the facility and the equipment therein
+    from unauthorized physical access, tampering, and theft. Concord evaluates a
+    signed, version-controlled attestation of the written facility security plan.
+    The attestation must enumerate the physical safeguards protecting the premises
+    and the specific theft- and tamper-protection measures, and it must be reviewed
+    at least annually and cosign-verified.
+
+  rationale: |
+    A facility security plan is the written blueprint that ties badge readers,
+    locks, cameras, alarms, and equipment tamper controls into a coherent program;
+    without it, individual measures drift and gaps go unnoticed. Auditors expect a
+    current, owner-attributed plan that names both the physical safeguards in place
+    and the concrete protections against theft and tampering of equipment that
+    stores or transmits ePHI.
 
   evidence:
-    - id: hipaa_164_310a2ii_facility_security_plan
-      source: attestation
-      type: policy_attestation
+    - id: facility_security_plan_attestation
+      source: github
+      type: file_glob
       fixture: ../tests/fixtures/hipaa-164-310a2ii-facility-security-plan-pass.json
       params:
-              schema: TODO  # e.g. ropa-v1, dpia-v1, dpa-v1, ism-v1
-              signers:
-                - dpo@acme.com
-              max_age_days: 365
+        repo: ${env.CONCORD_REPO}
+        glob: "policies/physical/facility-security-plan.yaml"
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_310a2ii_facility_security_plan
+    package: concord.hipaa.facility_security_plan
     file: ../policies/hipaa-164-310a2ii-facility-security-plan.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-310a2ii-facility-security-plan.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.310(a)(2)(ii)"
+    soc2:
+      - "CC6.4"
+    nist_800_53:
+      - "PE-3"
+      - "PE-6"
+    iso27001:
+      - "A.7.1"
+      - "A.7.4"
+
+  status: stable
+  blocking: true

@@ -1,11 +1,18 @@
 {
-  "hipaa_164_310a2ii_facility_security_plan": {
-    "fetched_at": "2026-01-01T00:00:00Z",
-    "version": "1",
-    "owner": "dpo@acme.com",
-    "signers": ["dpo@acme.com"],
-    "last_review_at": "2026-01-01T00:00:00Z",
-    "expires_at": "2027-01-01T00:00:00Z",
-    "attested_fields": ["scope", "lawful_basis", "retention"]
-  }
+  "fetched_at": "2026-06-20T09:00:00Z",
+  "owner": "Acme Health Facilities Security Manager",
+  "approval_date": "2026-02-01",
+  "last_reviewed_at": "2026-06-03",
+  "review_age_days": 17,
+  "physical_safeguards": [
+    "Perimeter fencing with a single staffed entrance",
+    "Badge-controlled interior doors with anti-tailgating mantraps at ePHI areas",
+    "Motion-triggered CCTV with 90-day retention and alarm monitoring"
+  ],
+  "theft_tamper_protections": [
+    "Servers bolted into locked, tamper-evident cages",
+    "Asset tags and quarterly hardware inventory reconciliation",
+    "Chassis intrusion-detection alarms forwarded to the SOC"
+  ],
+  "signature_verified": true
 }
