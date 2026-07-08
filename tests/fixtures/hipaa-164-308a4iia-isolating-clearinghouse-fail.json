@@ -1,7 +1,13 @@
 {
-  "fetched_at": "2026-06-06T10:00:00Z",
-  "applicability": false,
-  "last_reviewed_at": "2026-05-05",
-  "review_age_days": 32,
-  "signature_verified": true
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/clearinghouse-isolation.yaml",
+      "applicability": false,
+      "last_reviewed_at": "2026-05-05",
+      "review_age_days": 32,
+      "signature_verified": true
+    }
+  ]
 }

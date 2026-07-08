@@ -1,12 +1,18 @@
 {
-  "fetched_at": "2026-06-06T10:00:00Z",
-  "sla_hours": 24,
-  "systems_covered": [
-    "Okta identity provider",
-    "EHR application",
-    "AWS IAM and console"
-  ],
-  "last_reviewed_at": "2026-05-10",
-  "review_age_days": 27,
-  "signature_verified": true
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/access-termination-procedure.yaml",
+      "sla_hours": 24,
+      "systems_covered": [
+        "Okta identity provider",
+        "EHR application",
+        "AWS IAM and console"
+      ],
+      "last_reviewed_at": "2026-05-10",
+      "review_age_days": 27,
+      "signature_verified": true
+    }
+  ]
 }

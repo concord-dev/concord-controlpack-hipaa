@@ -34,31 +34,40 @@ deny contains msg if {
 
 deny contains msg if {
 	input.termination_procedure
+	count(object.get(input.termination_procedure, "docs", [])) == 0
+	msg := "no termination-procedure attestation document found at the configured path"
+}
+
+deny contains msg if {
+	some doc in input.termination_procedure.docs
 	some field in required_fields
-	missing(input.termination_procedure, field)
+	missing(doc, field)
 	msg := sprintf("termination-procedure attestation is missing required field %q", [field])
 }
 
 # sla_hours must be a number so the revocation window is actually measurable.
 deny contains msg if {
-	input.termination_procedure.sla_hours
-	not is_number(input.termination_procedure.sla_hours)
+	some doc in input.termination_procedure.docs
+	doc.sla_hours
+	not is_number(doc.sla_hours)
 	msg := "termination-procedure sla_hours must be a numeric value expressed in hours"
 }
 
 deny contains msg if {
-	input.termination_procedure.review_age_days > max_review_age_days
-	msg := sprintf("termination-procedure last reviewed %d days ago — HIPAA requires review at least every 365 days", [input.termination_procedure.review_age_days])
+	some doc in input.termination_procedure.docs
+	doc.review_age_days > max_review_age_days
+	msg := sprintf("termination-procedure last reviewed %d days ago — HIPAA requires review at least every 365 days", [doc.review_age_days])
 }
 
 deny contains msg if {
-	input.termination_procedure
-	not input.termination_procedure.signature_verified
+	some doc in input.termination_procedure.docs
+	not doc.signature_verified
 	msg := "termination-procedure attestation signature did not verify"
 }
 
 warn contains msg if {
-	is_number(input.termination_procedure.sla_hours)
-	input.termination_procedure.sla_hours > warn_sla_hours
-	msg := sprintf("termination-procedure allows %d hours to revoke access — OCR guidance expects prompt, typically same-day, deactivation", [input.termination_procedure.sla_hours])
+	some doc in input.termination_procedure.docs
+	is_number(doc.sla_hours)
+	doc.sla_hours > warn_sla_hours
+	msg := sprintf("termination-procedure allows %d hours to revoke access — OCR guidance expects prompt, typically same-day, deactivation", [doc.sla_hours])
 }

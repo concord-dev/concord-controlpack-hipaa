@@ -1,8 +1,14 @@
 {
-  "fetched_at": "2026-06-20T10:00:00Z",
-  "cadence": "ad-hoc",
-  "topics_covered": ["phishing"],
-  "last_distributed_at": "2026-06-01",
-  "review_age_days": 30,
-  "signature_verified": false
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/security-awareness-reminders.yaml",
+      "cadence": "ad-hoc",
+      "topics_covered": ["phishing"],
+      "last_distributed_at": "2026-06-01",
+      "review_age_days": 30,
+      "signature_verified": false
+    }
+  ]
 }

@@ -32,24 +32,32 @@ deny contains msg if {
 
 deny contains msg if {
 	input.authorization_supervision_policy
+	count(object.get(input.authorization_supervision_policy, "docs", [])) == 0
+	msg := "no authorization-and-supervision attestation document found at the configured path"
+}
+
+deny contains msg if {
+	some doc in input.authorization_supervision_policy.docs
 	some field in required_fields
-	missing(input.authorization_supervision_policy, field)
+	missing(doc, field)
 	msg := sprintf("authorization-and-supervision attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	input.authorization_supervision_policy.review_age_days > max_review_age_days
-	msg := sprintf("authorization-and-supervision last reviewed %d days ago — HIPAA requires review at least every 365 days", [input.authorization_supervision_policy.review_age_days])
+	some doc in input.authorization_supervision_policy.docs
+	doc.review_age_days > max_review_age_days
+	msg := sprintf("authorization-and-supervision last reviewed %d days ago — HIPAA requires review at least every 365 days", [doc.review_age_days])
 }
 
 deny contains msg if {
-	input.authorization_supervision_policy
-	not input.authorization_supervision_policy.signature_verified
+	some doc in input.authorization_supervision_policy.docs
+	not doc.signature_verified
 	msg := "authorization-and-supervision attestation signature did not verify"
 }
 
 warn contains msg if {
-	input.authorization_supervision_policy.review_age_days > 300
-	input.authorization_supervision_policy.review_age_days <= max_review_age_days
-	msg := sprintf("authorization-and-supervision was last reviewed %d days ago — schedule the annual review before it lapses at 365 days", [input.authorization_supervision_policy.review_age_days])
+	some doc in input.authorization_supervision_policy.docs
+	doc.review_age_days > 300
+	doc.review_age_days <= max_review_age_days
+	msg := sprintf("authorization-and-supervision was last reviewed %d days ago — schedule the annual review before it lapses at 365 days", [doc.review_age_days])
 }

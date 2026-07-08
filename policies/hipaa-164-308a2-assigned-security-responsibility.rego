@@ -34,24 +34,32 @@ deny contains msg if {
 
 deny contains msg if {
 	input.security_official
+	count(object.get(input.security_official, "docs", [])) == 0
+	msg := "no assigned-security-responsibility attestation document found at the configured path"
+}
+
+deny contains msg if {
+	some doc in input.security_official.docs
 	some field in required_fields
-	missing(input.security_official, field)
+	missing(doc, field)
 	msg := sprintf("assigned-security-responsibility attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	input.security_official.review_age_days > max_review_age_days
-	msg := sprintf("assigned-security-responsibility last reviewed %d days ago — HIPAA requires review at least every 365 days", [input.security_official.review_age_days])
+	some doc in input.security_official.docs
+	doc.review_age_days > max_review_age_days
+	msg := sprintf("assigned-security-responsibility last reviewed %d days ago — HIPAA requires review at least every 365 days", [doc.review_age_days])
 }
 
 deny contains msg if {
-	input.security_official
-	not input.security_official.signature_verified
+	some doc in input.security_official.docs
+	not doc.signature_verified
 	msg := "assigned-security-responsibility attestation signature did not verify"
 }
 
 warn contains msg if {
-	input.security_official.review_age_days > 300
-	input.security_official.review_age_days <= max_review_age_days
-	msg := sprintf("assigned-security-responsibility was last reviewed %d days ago — reconfirm the appointment before it lapses at 365 days", [input.security_official.review_age_days])
+	some doc in input.security_official.docs
+	doc.review_age_days > 300
+	doc.review_age_days <= max_review_age_days
+	msg := sprintf("assigned-security-responsibility was last reviewed %d days ago — reconfirm the appointment before it lapses at 365 days", [doc.review_age_days])
 }

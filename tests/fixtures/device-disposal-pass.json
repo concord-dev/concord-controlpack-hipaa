@@ -1,23 +1,29 @@
 {
-  "fetched_at": "2026-06-06T10:00:00Z",
-  "approval_date": "2026-01-15",
-  "approving_authority": "Acme Health IT Director",
-  "last_reviewed_at": "2026-04-01",
-  "review_age_days": 66,
-  "sanitisation_method": "nist_800_88_purge",
-  "disposal_log": [
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
     {
-      "date": "2026-03-12",
-      "device_id": "LAP-12-99",
-      "method": "nist_800_88_purge",
-      "operator": "j.doe@acme.health"
-    },
-    {
-      "date": "2026-04-22",
-      "device_id": "DSK-77-21",
-      "method": "physical_shred",
-      "operator": "j.doe@acme.health"
+      "path": "policies/device-disposal.yaml",
+      "approval_date": "2026-01-15",
+      "approving_authority": "Acme Health IT Director",
+      "last_reviewed_at": "2026-04-01",
+      "review_age_days": 66,
+      "sanitisation_method": "nist_800_88_purge",
+      "disposal_log": [
+        {
+          "date": "2026-03-12",
+          "device_id": "LAP-12-99",
+          "method": "nist_800_88_purge",
+          "operator": "j.doe@acme.health"
+        },
+        {
+          "date": "2026-04-22",
+          "device_id": "DSK-77-21",
+          "method": "physical_shred",
+          "operator": "j.doe@acme.health"
+        }
+      ],
+      "signature_verified": true
     }
-  ],
-  "signature_verified": true
+  ]
 }

@@ -17,34 +17,42 @@ required_fields := {
 	"audience",
 }
 
-att := input.security_reminders_attestation
-
 deny contains msg if {
 	not input.security_reminders_attestation
 	msg := "no security-awareness reminder attestation collected"
 }
 
 deny contains msg if {
+	input.security_reminders_attestation
+	count(object.get(input.security_reminders_attestation, "docs", [])) == 0
+	msg := "no security-awareness reminder document found at the configured path"
+}
+
+deny contains msg if {
+	some doc in input.security_reminders_attestation.docs
 	some field in required_fields
-	unset(field)
+	unset(doc, field)
 	msg := sprintf("security-awareness reminder attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	count(att.topics_covered) == 0
+	some doc in input.security_reminders_attestation.docs
+	count(doc.topics_covered) == 0
 	msg := "security-awareness reminder attestation lists no topics_covered"
 }
 
 deny contains msg if {
-	att.review_age_days > max_review_age_days
-	msg := sprintf("security-awareness reminders last refreshed %d days ago — HIPAA expects at least annual reminders", [att.review_age_days])
+	some doc in input.security_reminders_attestation.docs
+	doc.review_age_days > max_review_age_days
+	msg := sprintf("security-awareness reminders last refreshed %d days ago — HIPAA expects at least annual reminders", [doc.review_age_days])
 }
 
 deny contains msg if {
-	not att.signature_verified
+	some doc in input.security_reminders_attestation.docs
+	not doc.signature_verified
 	msg := "security-awareness reminder attestation cosign signature did not verify"
 }
 
-unset(field) if not att[field]
+unset(doc, field) if not doc[field]
 
-unset(field) if att[field] == ""
+unset(doc, field) if doc[field] == ""

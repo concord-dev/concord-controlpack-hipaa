@@ -1,14 +1,20 @@
 {
-  "fetched_at": "2026-06-06T10:00:00Z",
-  "applicability": true,
-  "isolation_controls": [
-    "Clearinghouse ePHI resides in a dedicated AWS account with no trust relationship to the parent organization",
-    "Network segmentation and separate VPCs prevent lateral access from corporate systems",
-    "Distinct IAM identity store and access-review process scoped to clearinghouse staff only",
-    "Encryption keys are managed in a clearinghouse-only KMS with separate administrators"
-  ],
-  "justification": "Acme operates a health care clearinghouse as a business unit within the larger organization; the controls above isolate its ePHI from the rest of the company.",
-  "last_reviewed_at": "2026-05-05",
-  "review_age_days": 32,
-  "signature_verified": true
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/clearinghouse-isolation.yaml",
+      "applicability": true,
+      "isolation_controls": [
+        "Clearinghouse ePHI resides in a dedicated AWS account with no trust relationship to the parent organization",
+        "Network segmentation and separate VPCs prevent lateral access from corporate systems",
+        "Distinct IAM identity store and access-review process scoped to clearinghouse staff only",
+        "Encryption keys are managed in a clearinghouse-only KMS with separate administrators"
+      ],
+      "justification": "Acme operates a health care clearinghouse as a business unit within the larger organization; the controls above isolate its ePHI from the rest of the company.",
+      "last_reviewed_at": "2026-05-05",
+      "review_age_days": 32,
+      "signature_verified": true
+    }
+  ]
 }

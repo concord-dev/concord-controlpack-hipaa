@@ -1,12 +1,18 @@
 {
-  "fetched_at": "2026-06-06T10:00:00Z",
-  "approval_date": "2026-01-15",
-  "approving_authority": "Acme Health CISO",
-  "last_reviewed_at": "2026-04-01",
-  "next_review_due": "2027-04-01",
-  "scope": "all ePHI workloads in AWS us-east-1 and us-west-2",
-  "treatment_summary": "Risks ranked and tracked in Concord risk register R-1..R-12 with quarterly review.",
-  "review_age_days": 66,
-  "signature_verified": true,
-  "linked_risks_count": 12
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/risk-analysis.yaml",
+      "approval_date": "2026-01-15",
+      "approving_authority": "Acme Health CISO",
+      "last_reviewed_at": "2026-04-01",
+      "next_review_due": "2027-04-01",
+      "scope": "all ePHI workloads in AWS us-east-1 and us-west-2",
+      "treatment_summary": "Risks ranked and tracked in Concord risk register R-1..R-12 with quarterly review.",
+      "review_age_days": 66,
+      "signature_verified": true,
+      "linked_risks_count": 12
+    }
+  ]
 }

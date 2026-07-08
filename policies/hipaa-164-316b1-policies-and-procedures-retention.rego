@@ -5,10 +5,12 @@ import rego.v1
 # HIPAA §164.316(b)(1) — Documentation, with the six-year retention period set
 # by §164.316(b)(2)(i). Concord evaluates a signed, version-controlled
 # attestation that records the enforced retention period and the inventory of
-# retained documents. The retention period must be at least six years, the
-# inventory must be non-empty, the attestation must be reviewed within the last
-# 12 months, and it must be cosign-verified. Evidence is the attestation object
-# at input.retention_attestation.
+# retained documents. It is collected from the repository via github/file_glob
+# with frontmatter parsing, so each matched file appears in
+# input.retention_attestation.docs with its frontmatter keys plus a "path".
+# The retention period must be at least six years, the inventory must be
+# non-empty, the attestation must be reviewed within the last 12 months, and it
+# must be cosign-verified.
 
 min_retention_years := 6
 
@@ -26,31 +28,51 @@ deny contains msg if {
 }
 
 deny contains msg if {
+	input.retention_attestation
+	count(object.get(input.retention_attestation, "docs", [])) == 0
+	msg := "no policies-and-procedures-retention attestation document found at the configured repository path"
+}
+
+deny contains msg if {
+	some doc in input.retention_attestation.docs
 	some field in required_fields
-	missing_or_empty(input.retention_attestation, field)
+	not has_value(doc, field)
 	msg := sprintf("policies-and-procedures-retention attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	input.retention_attestation.retention_years < min_retention_years
-	msg := sprintf("HIPAA documentation retention is set to %d years — §164.316(b)(2)(i) requires at least 6 years", [input.retention_attestation.retention_years])
+	some doc in input.retention_attestation.docs
+	doc.retention_years < min_retention_years
+	msg := sprintf("HIPAA documentation retention is set to %d years — §164.316(b)(2)(i) requires at least 6 years", [doc.retention_years])
 }
 
 deny contains msg if {
-	input.retention_attestation.review_age_days > max_review_age_days
-	msg := sprintf("policies-and-procedures-retention attestation last reviewed %d days ago — expected at least annual review", [input.retention_attestation.review_age_days])
+	some doc in input.retention_attestation.docs
+	doc.review_age_days > max_review_age_days
+	msg := sprintf("policies-and-procedures-retention attestation last reviewed %d days ago — expected at least annual review", [doc.review_age_days])
 }
 
 deny contains msg if {
-	not input.retention_attestation.signature_verified
+	some doc in input.retention_attestation.docs
+	not doc.signature_verified == true
 	msg := "policies-and-procedures-retention attestation cosign signature did not verify"
 }
 
-missing_or_empty(obj, field) if not obj[field]
+has_value(doc, key) if {
+	v := doc[key]
+	not is_blank(v)
+}
 
-missing_or_empty(obj, field) if obj[field] == ""
+is_blank(v) if v == null
 
-missing_or_empty(obj, field) if {
-	is_array(obj[field])
-	count(obj[field]) == 0
+is_blank(v) if v == ""
+
+is_blank(v) if {
+	is_array(v)
+	count(v) == 0
+}
+
+is_blank(v) if {
+	is_object(v)
+	count(v) == 0
 }

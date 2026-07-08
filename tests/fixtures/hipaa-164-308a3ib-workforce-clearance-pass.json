@@ -1,14 +1,20 @@
 {
-  "fetched_at": "2026-06-06T10:00:00Z",
-  "clearance_procedure": "Prior to ePHI access, candidates complete identity verification, a criminal background check, employment and education verification, and OIG/SAM exclusion-list screening; results are reviewed and cleared by HR before provisioning.",
-  "roles_in_scope": [
-    "clinical staff",
-    "billing and coding staff",
-    "IT administrators with production access",
-    "third-party contractors handling ePHI"
-  ],
-  "screening_provider": "Sterling Talent Solutions",
-  "last_reviewed_at": "2026-03-30",
-  "review_age_days": 68,
-  "signature_verified": true
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/workforce-clearance.yaml",
+      "clearance_procedure": "Prior to ePHI access, candidates complete identity verification, a criminal background check, employment and education verification, and OIG/SAM exclusion-list screening; results are reviewed and cleared by HR before provisioning.",
+      "roles_in_scope": [
+        "clinical staff",
+        "billing and coding staff",
+        "IT administrators with production access",
+        "third-party contractors handling ePHI"
+      ],
+      "screening_provider": "Sterling Talent Solutions",
+      "last_reviewed_at": "2026-03-30",
+      "review_age_days": 68,
+      "signature_verified": true
+    }
+  ]
 }

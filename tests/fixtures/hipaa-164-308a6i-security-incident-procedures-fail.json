@@ -1,9 +1,15 @@
 {
-  "fetched_at": "2026-06-20T10:00:00Z",
-  "scope": "all systems processing, storing, or transmitting ePHI",
-  "roles_responsibilities": "Incident commander (CISO), triage (SecOps on-call)",
-  "detection_reporting": "SIEM alerts and the security@acme.com hotline open a PagerDuty incident",
-  "last_reviewed_at": "2026-05-15",
-  "review_age_days": 54,
-  "signature_verified": false
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/incident-response-plan.yaml",
+      "scope": "all systems processing, storing, or transmitting ePHI",
+      "roles_responsibilities": "Incident commander (CISO), triage (SecOps on-call)",
+      "detection_reporting": "SIEM alerts and the security@acme.com hotline open a PagerDuty incident",
+      "last_reviewed_at": "2026-05-15",
+      "review_age_days": 54,
+      "signature_verified": false
+    }
+  ]
 }

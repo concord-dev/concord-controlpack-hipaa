@@ -1,12 +1,18 @@
 {
-  "fetched_at": "2026-06-20T09:00:00Z",
-  "owner": "Acme Health Disaster-Recovery Lead",
-  "approval_date": "2024-03-01",
-  "last_reviewed_at": "2024-03-01",
-  "review_age_days": 841,
-  "last_tested_at": "2024-03-01",
-  "test_age_days": 841,
-  "emergency_access_procedure": "During a declared emergency the DR lead authorizes escorted physical access to the primary data center.",
-  "responsible_role": "disaster-recovery-lead",
-  "signature_verified": false
+  "scanned_paths": ["policies/physical"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/physical/contingency-operations.yaml",
+      "owner": "Acme Health Disaster-Recovery Lead",
+      "approval_date": "2024-03-01",
+      "last_reviewed_at": "2024-03-01",
+      "review_age_days": 841,
+      "last_tested_at": "2024-03-01",
+      "test_age_days": 841,
+      "emergency_access_procedure": "During a declared emergency the DR lead authorizes escorted physical access to the primary data center.",
+      "responsible_role": "disaster-recovery-lead",
+      "signature_verified": false
+    }
+  ]
 }

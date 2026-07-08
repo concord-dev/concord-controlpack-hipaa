@@ -31,24 +31,32 @@ deny contains msg if {
 
 deny contains msg if {
 	input.workforce_clearance_policy
+	count(object.get(input.workforce_clearance_policy, "docs", [])) == 0
+	msg := "no workforce-clearance attestation document found at the configured path"
+}
+
+deny contains msg if {
+	some doc in input.workforce_clearance_policy.docs
 	some field in required_fields
-	missing(input.workforce_clearance_policy, field)
+	missing(doc, field)
 	msg := sprintf("workforce-clearance attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	input.workforce_clearance_policy.review_age_days > max_review_age_days
-	msg := sprintf("workforce-clearance last reviewed %d days ago — HIPAA requires review at least every 365 days", [input.workforce_clearance_policy.review_age_days])
+	some doc in input.workforce_clearance_policy.docs
+	doc.review_age_days > max_review_age_days
+	msg := sprintf("workforce-clearance last reviewed %d days ago — HIPAA requires review at least every 365 days", [doc.review_age_days])
 }
 
 deny contains msg if {
-	input.workforce_clearance_policy
-	not input.workforce_clearance_policy.signature_verified
+	some doc in input.workforce_clearance_policy.docs
+	not doc.signature_verified
 	msg := "workforce-clearance attestation signature did not verify"
 }
 
 warn contains msg if {
-	input.workforce_clearance_policy.review_age_days > 300
-	input.workforce_clearance_policy.review_age_days <= max_review_age_days
-	msg := sprintf("workforce-clearance was last reviewed %d days ago — schedule the annual review before it lapses at 365 days", [input.workforce_clearance_policy.review_age_days])
+	some doc in input.workforce_clearance_policy.docs
+	doc.review_age_days > 300
+	doc.review_age_days <= max_review_age_days
+	msg := sprintf("workforce-clearance was last reviewed %d days ago — schedule the annual review before it lapses at 365 days", [doc.review_age_days])
 }

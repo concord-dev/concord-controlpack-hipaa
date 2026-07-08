@@ -1,15 +1,21 @@
 {
-  "fetched_at": "2026-06-06T10:00:00Z",
-  "scope": "EHR production database only",
-  "assets_in_scope": [
-    "EHR application (RDS Postgres ephi-prod)"
-  ],
-  "threats_identified": [
-    "ransomware",
-    "phishing"
-  ],
-  "likelihood_impact_method": "informal high/medium/low judgement",
-  "last_reviewed_at": "2026-05-01",
-  "review_age_days": 36,
-  "signature_verified": true
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/risk-analysis.yaml",
+      "scope": "EHR production database only",
+      "assets_in_scope": [
+        "EHR application (RDS Postgres ephi-prod)"
+      ],
+      "threats_identified": [
+        "ransomware",
+        "phishing"
+      ],
+      "likelihood_impact_method": "informal high/medium/low judgement",
+      "last_reviewed_at": "2026-05-01",
+      "review_age_days": 36,
+      "signature_verified": true
+    }
+  ]
 }

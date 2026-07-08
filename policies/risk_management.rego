@@ -24,22 +24,32 @@ deny contains msg if {
 }
 
 deny contains msg if {
+    input.risk_attestation
+    count(object.get(input.risk_attestation, "docs", [])) == 0
+    msg := "no risk-analysis attestation document found at the configured path"
+}
+
+deny contains msg if {
+    some doc in input.risk_attestation.docs
     some field in required_fields
-    not input.risk_attestation[field]
+    not doc[field]
     msg := sprintf("risk-analysis attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-    input.risk_attestation.review_age_days > max_review_age_days
-    msg := sprintf("risk-analysis last reviewed %d days ago — HIPAA requires annual review", [input.risk_attestation.review_age_days])
+    some doc in input.risk_attestation.docs
+    doc.review_age_days > max_review_age_days
+    msg := sprintf("risk-analysis last reviewed %d days ago — HIPAA requires annual review", [doc.review_age_days])
 }
 
 deny contains msg if {
-    not input.risk_attestation.signature_verified
+    some doc in input.risk_attestation.docs
+    not doc.signature_verified
     msg := "risk-analysis attestation cosign signature did not verify"
 }
 
 warn contains msg if {
-    input.risk_attestation.linked_risks_count == 0
+    some doc in input.risk_attestation.docs
+    doc.linked_risks_count == 0
     msg := "risk-analysis document has no linked risks in the Concord risk register — add `concord risk add ... --link-attestation`"
 }

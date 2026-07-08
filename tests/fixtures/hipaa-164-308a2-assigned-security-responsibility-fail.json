@@ -1,11 +1,17 @@
 {
-  "fetched_at": "2026-06-06T10:00:00Z",
-  "official_title": "Chief Information Security Officer",
-  "appointed_at": "2025-02-01",
-  "responsibilities": [
-    "Develop and maintain the HIPAA Security Rule policies and procedures"
-  ],
-  "last_reviewed_at": "2026-05-15",
-  "review_age_days": 22,
-  "signature_verified": true
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/security-official.yaml",
+      "official_title": "Chief Information Security Officer",
+      "appointed_at": "2025-02-01",
+      "responsibilities": [
+        "Develop and maintain the HIPAA Security Rule policies and procedures"
+      ],
+      "last_reviewed_at": "2026-05-15",
+      "review_age_days": 22,
+      "signature_verified": true
+    }
+  ]
 }

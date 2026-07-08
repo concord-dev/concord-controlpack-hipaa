@@ -1,8 +1,14 @@
 {
-  "fetched_at": "2026-06-20T10:00:00Z",
-  "data_backup_plan": "Nightly encrypted RDS + S3 snapshots retained 35 days, replicated cross-region",
-  "emergency_mode_plan": "Break-glass read-only ePHI access with mandatory post-event review",
-  "last_reviewed_at": "2026-05-01",
-  "review_age_days": 68,
-  "signature_verified": false
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/contingency-plan.yaml",
+      "data_backup_plan": "Nightly encrypted RDS + S3 snapshots retained 35 days, replicated cross-region",
+      "emergency_mode_plan": "Break-glass read-only ePHI access with mandatory post-event review",
+      "last_reviewed_at": "2026-05-01",
+      "review_age_days": 68,
+      "signature_verified": false
+    }
+  ]
 }

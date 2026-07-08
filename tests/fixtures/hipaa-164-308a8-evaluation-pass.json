@@ -1,9 +1,15 @@
 {
-  "fetched_at": "2026-06-20T10:00:00Z",
-  "last_evaluation_at": "2026-04-05",
-  "evaluator": "Third-party assessor (Trailhead Security) with internal compliance sign-off",
-  "scope": "all ePHI-handling AWS accounts, endpoints, and administrative safeguards",
-  "findings_remediated": true,
-  "review_age_days": 94,
-  "signature_verified": true
+  "scanned_paths": ["policies"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/security-evaluation.yaml",
+      "last_evaluation_at": "2026-06-01",
+      "evaluator": "Third-party assessor (Trailhead Security) with internal compliance sign-off",
+      "scope": "all ePHI-handling AWS accounts, endpoints, and administrative safeguards",
+      "findings_remediated": true,
+      "review_age_days": 24,
+      "signature_verified": true
+    }
+  ]
 }

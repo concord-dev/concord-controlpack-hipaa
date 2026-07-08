@@ -36,24 +36,32 @@ deny contains msg if {
 
 deny contains msg if {
 	input.risk_analysis
+	count(object.get(input.risk_analysis, "docs", [])) == 0
+	msg := "no risk-analysis attestation document found at the configured path"
+}
+
+deny contains msg if {
+	some doc in input.risk_analysis.docs
 	some field in required_fields
-	missing(input.risk_analysis, field)
+	missing(doc, field)
 	msg := sprintf("risk-analysis attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	input.risk_analysis.review_age_days > max_review_age_days
-	msg := sprintf("risk-analysis last reviewed %d days ago — HIPAA requires review at least every 365 days", [input.risk_analysis.review_age_days])
+	some doc in input.risk_analysis.docs
+	doc.review_age_days > max_review_age_days
+	msg := sprintf("risk-analysis last reviewed %d days ago — HIPAA requires review at least every 365 days", [doc.review_age_days])
 }
 
 deny contains msg if {
-	input.risk_analysis
-	not input.risk_analysis.signature_verified
+	some doc in input.risk_analysis.docs
+	not doc.signature_verified
 	msg := "risk-analysis attestation signature did not verify"
 }
 
 warn contains msg if {
-	input.risk_analysis.review_age_days > 300
-	input.risk_analysis.review_age_days <= max_review_age_days
-	msg := sprintf("risk-analysis was last reviewed %d days ago — schedule the annual review before it lapses at 365 days", [input.risk_analysis.review_age_days])
+	some doc in input.risk_analysis.docs
+	doc.review_age_days > 300
+	doc.review_age_days <= max_review_age_days
+	msg := sprintf("risk-analysis was last reviewed %d days ago — schedule the annual review before it lapses at 365 days", [doc.review_age_days])
 }

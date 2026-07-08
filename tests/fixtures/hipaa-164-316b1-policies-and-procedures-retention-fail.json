@@ -1,13 +1,19 @@
 {
-  "fetched_at": "2026-06-20T09:00:00Z",
-  "owner": "Acme Health Compliance Officer",
-  "approval_date": "2024-02-15",
-  "last_reviewed_at": "2024-02-15",
-  "review_age_days": 856,
-  "retention_years": 3,
-  "document_inventory": [
-    "Information Security Policy",
-    "Risk Analysis and Risk Management Plan"
-  ],
-  "signature_verified": true
+  "scanned_paths": ["policies/governance"],
+  "fetched_at": "2026-06-25T10:00:00Z",
+  "docs": [
+    {
+      "path": "policies/governance/documentation-retention.yaml",
+      "owner": "Acme Health Compliance Officer",
+      "approval_date": "2024-02-15",
+      "last_reviewed_at": "2024-02-15",
+      "review_age_days": 856,
+      "retention_years": 3,
+      "document_inventory": [
+        "Information Security Policy",
+        "Risk Analysis and Risk Management Plan"
+      ],
+      "signature_verified": true
+    }
+  ]
 }

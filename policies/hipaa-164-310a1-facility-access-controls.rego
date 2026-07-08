@@ -4,10 +4,12 @@ import rego.v1
 
 # HIPAA §164.310(a)(1) — Facility Access Controls (Physical Safeguards).
 # No cloud API reports who badged into a data center, so Concord evaluates a
-# signed, version-controlled attestation of the facility access program. The
-# attestation must be current (reviewed within the last 12 months),
-# cosign-verified, and populated with the required program elements. Evidence
-# is the attestation object at input.facility_access_attestation.
+# signed, version-controlled attestation of the facility access program. It is
+# collected from the repository via github/file_glob with frontmatter parsing,
+# so each matched file appears in input.facility_access_attestation.docs with
+# its frontmatter keys plus a "path". The attestation must be current
+# (reviewed within the last 12 months), cosign-verified, and populated with
+# the required program elements.
 
 max_review_age_days := 365
 
@@ -24,26 +26,45 @@ deny contains msg if {
 }
 
 deny contains msg if {
+	input.facility_access_attestation
+	count(object.get(input.facility_access_attestation, "docs", [])) == 0
+	msg := "no facility-access-controls attestation document found at the configured repository path"
+}
+
+deny contains msg if {
+	some doc in input.facility_access_attestation.docs
 	some field in required_fields
-	missing_or_empty(input.facility_access_attestation, field)
+	not has_value(doc, field)
 	msg := sprintf("facility-access-controls attestation is missing required field %q", [field])
 }
 
 deny contains msg if {
-	input.facility_access_attestation.review_age_days > max_review_age_days
-	msg := sprintf("facility-access-controls attestation last reviewed %d days ago — HIPAA §164.310(a)(1) expects at least annual review", [input.facility_access_attestation.review_age_days])
+	some doc in input.facility_access_attestation.docs
+	doc.review_age_days > max_review_age_days
+	msg := sprintf("facility-access-controls attestation last reviewed %d days ago — HIPAA §164.310(a)(1) expects at least annual review", [doc.review_age_days])
 }
 
 deny contains msg if {
-	not input.facility_access_attestation.signature_verified
+	some doc in input.facility_access_attestation.docs
+	not doc.signature_verified == true
 	msg := "facility-access-controls attestation cosign signature did not verify"
 }
 
-missing_or_empty(obj, field) if not obj[field]
+has_value(doc, key) if {
+	v := doc[key]
+	not is_blank(v)
+}
 
-missing_or_empty(obj, field) if obj[field] == ""
+is_blank(v) if v == null
 
-missing_or_empty(obj, field) if {
-	is_array(obj[field])
-	count(obj[field]) == 0
+is_blank(v) if v == ""
+
+is_blank(v) if {
+	is_array(v)
+	count(v) == 0
+}
+
+is_blank(v) if {
+	is_object(v)
+	count(v) == 0
 }
