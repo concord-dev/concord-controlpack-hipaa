@@ -3,36 +3,63 @@ kind: Control
 
 metadata:
   id: HIPAA-164.312d-person-or-entity-authentication
-  name: hipaa-164-312d-person-or-entity-authentication
+  name: person-or-entity-authentication
   title: MFA is enforced for every IAM user with console access
   framework: hipaa
+  category: Technical Safeguards
   severity: critical
-  tags: []
+  tags:
+    - hipaa
+    - authentication
+    - mfa
+    - iam
   owners:
-    - team: concord-dev
+    - team: platform
 
 spec:
   description: |
-    TODO: describe what HIPAA-164.312d-person-or-entity-authentication enforces.
+    HIPAA Security Rule §164.312(d) (Person or Entity Authentication)
+    requires procedures to verify that a person or entity seeking access to
+    ePHI is the one claimed. For AWS console access this means multi-factor
+    authentication on every IAM principal that can sign in with a password.
+    Concord reads the IAM credential report and fails any console-enabled
+    user that has no active MFA device. The root account is checked by its
+    own control (HIPAA-164.312-unique-user-id) and only warned on here.
+
+  rationale: |
+    Single-factor console access is the most common initial-access vector in
+    healthcare breaches, and OCR settlements repeatedly cite missing MFA as a
+    §164.312(d) failure. Enforcing an MFA device on every interactive
+    identity is the highest-leverage authentication safeguard and a
+    prerequisite for meaningful access logging.
 
   evidence:
-    - id: hipaa_164_312d_person_or_entity_authentication
+    - id: iam_credentials
       source: aws
-      type: aws_resource_inventory
+      type: iam_credential_report
       fixture: ../tests/fixtures/hipaa-164-312d-person-or-entity-authentication-pass.json
       params:
-              service: TODO  # e.g. s3, iam, kms
-              region: us-east-1
+        region: ${env.AWS_REGION}
 
   policy:
     engine: rego
-    package: concord.hipaa.hipaa_164_312d_person_or_entity_authentication
+    package: concord.hipaa.person_or_entity_authentication
     file: ../policies/hipaa-164-312d-person-or-entity-authentication.rego
 
   remediation:
     runbook: docs/remediation/hipaa-164-312d-person-or-entity-authentication.md
     auto_fix: false
-    estimated_effort: 30m
+    estimated_effort: 1d
 
-  status: draft
-  blocking: false
+  mappings:
+    hipaa:
+      - "164.312(d)"
+    soc2:
+      - "CC6.1"
+    nist_800_53:
+      - "IA-2"
+    cis_aws:
+      - "1.10"
+
+  status: stable
+  blocking: true

@@ -1,16 +1,30 @@
-package concord.hipaa.hipaa_164_312d_person_or_entity_authentication
+package concord.hipaa.person_or_entity_authentication
 
 import rego.v1
-import data.concord.lib.collection
-import data.concord.lib.evidence
+
+# HIPAA §164.312(d) — Person or Entity Authentication.
+# Every IAM user with console (password) access must have an active MFA
+# device. Adapted from CIS AWS 1.10 (console_mfa) and SOC 2 CC6.1.
+# Evidence: AWS IAM credential report (input.iam_credentials.users[]).
 
 deny contains msg if {
-	not evidence.present(input, "hipaa_164_312d_person_or_entity_authentication")
-	msg := "HIPAA-164.312d-person-or-entity-authentication: aws evidence missing"
+	not input.iam_credentials
+	msg := "no IAM credential report collected"
 }
 
 deny contains msg if {
-	some r in input.hipaa_164_312d_person_or_entity_authentication.resources
-	not r.compliant
-	msg := sprintf("HIPAA-164.312d-person-or-entity-authentication: resource %q is non-compliant (reason: %s)", [r.arn, r.reason])
+	some u in input.iam_credentials.users
+	u.password_enabled == true
+	u.user != "<root_account>"
+	not u.mfa_active
+	msg := sprintf("IAM user %q has console access without an MFA device — enforce MFA (HIPAA §164.312(d))", [u.user])
+}
+
+# Root has its own control (HIPAA-164.312-unique-user-id); surface console-
+# enabled root here as advisory rather than duplicating the failure.
+warn contains msg if {
+	some u in input.iam_credentials.users
+	u.user == "<root_account>"
+	u.password_enabled == true
+	msg := "root account has console access — prefer federated admin access and lock down root"
 }
