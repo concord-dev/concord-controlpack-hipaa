@@ -35,7 +35,7 @@ spec:
   evidence:
     - id: iam_identity
       source: aws
-      type: iam_account_summary
+      type: iam_identity_inventory
       fixture: ../tests/fixtures/unique-user-id-pass.json
       params:
         region: ${env.AWS_REGION}
