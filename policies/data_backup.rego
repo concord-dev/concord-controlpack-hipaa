@@ -43,6 +43,26 @@ warn contains msg if {
     msg := sprintf("backup vault %q is locked but not KMS-encrypted (use a customer-managed key)", [vault.name])
 }
 
+# doc 31 §4 — no fail-open tag gates: a resource with no 'ephi' tag is neither confirmed in-scope
+# nor out-of-scope, so every deny above skips it and it would pass silently.
+# Warn on the unclassified resource instead of ignoring it.
+
+warn contains msg if {
+    some resource in input.ephi_backups.rds_instances
+    not classified(resource)
+    msg := sprintf("RDS instance %q has no ephi tag, so this control's checks did not apply to it — tag ephi=true to bring it into ePHI scope or ephi=false to confirm it is out of scope", [resource.identifier])
+}
+
+warn contains msg if {
+    some resource in input.ephi_backups.dynamodb_tables
+    not classified(resource)
+    msg := sprintf("DynamoDB table %q has no ephi tag, so this control's checks did not apply to it — tag ephi=true to bring it into ePHI scope or ephi=false to confirm it is out of scope", [resource.name])
+}
+
 is_ephi(resource) if {
     resource.tags.ephi == "true"
 }
+
+classified(resource) if resource.tags.ephi == "true"
+
+classified(resource) if resource.tags.ephi == "false"

@@ -40,3 +40,17 @@ is_ephi(r) if {
 has_max_session(r) if {
 	is_number(r.max_session_duration_seconds)
 }
+
+# doc 31 §4 — no fail-open tag gates: a resource with no 'ephi' tag is neither confirmed in-scope
+# nor out-of-scope, so every deny above skips it and it would pass silently.
+# Warn on the unclassified resource instead of ignoring it.
+
+warn contains msg if {
+	some resource in input.iam_roles.roles
+	not classified(resource)
+	msg := sprintf("IAM role %q has no ephi tag, so this control's checks did not apply to it — tag ephi=true to bring it into ePHI scope or ephi=false to confirm it is out of scope", [resource.role_name])
+}
+
+classified(resource) if resource.tags.ephi == "true"
+
+classified(resource) if resource.tags.ephi == "false"
